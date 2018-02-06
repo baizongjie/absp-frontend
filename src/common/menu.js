@@ -1,6 +1,26 @@
 import { isUrl } from '../utils/utils';
 
 const menuData = [{
+  name: '项目基本维护',
+  icon: 'appstore-o',
+  path: 'project',
+  children: [{
+    name: '项目新增',
+    path: 'add',
+  }, {
+    name: '项目修改',
+    path: 'modify',
+  }, {
+    name: '项目删除',
+    path: 'remove',
+  }, {
+    name: '项目列表查询',
+    path: 'list',
+  }, {
+    name: '项目列表查询',
+    path: 'detail',
+  }],
+}, {
   name: 'dashboard',
   icon: 'dashboard',
   path: 'dashboard',

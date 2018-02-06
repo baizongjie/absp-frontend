@@ -14,7 +14,8 @@ import NotFound from '../routes/Exception/404';
 import { getRoutes } from '../utils/utils';
 import Authorized from '../utils/Authorized';
 import { getMenuData } from '../common/menu';
-import logo from '../assets/logo.svg';
+import logo from '../assets/logo-p.png';
+import icon from '../assets/logo-icon-p.png';
 
 const { Content, Header, Footer } = Layout;
 const { AuthorizedRoute } = Authorized;
@@ -153,6 +154,7 @@ class BasicLayout extends React.PureComponent {
       <Layout>
         <SiderMenu
           logo={logo}
+          icon={icon}
           // 不带Authorized参数的情况下如果没有权限,会强制跳到403界面
           // If you do not have the Authorized parameter
           // you will be forced to jump to the 403 interface without permission
