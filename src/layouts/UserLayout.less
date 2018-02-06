@@ -1,0 +1,37 @@
+@import "../../src/style/themes/default.less";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  // background: #f0f2f5;
+  background: white;
+}
+
+.content {
+  padding: 32px 0;
+  flex: 1;
+}
+
+@media (min-width: @screen-md-min) {
+  .container {
+    background-image: url('/background.svg');
+    background-repeat: no-repeat;
+    background-position: center 110px;
+    background-size: 100%;
+  }
+
+  .content {
+    padding: 112px 0 24px 0;
+  }
+}
+
+.top {
+  text-align: center;
+}
+
+.logo {
+  width: 400px;
+  vertical-align: top;
+  margin-right: 16px;
+}
