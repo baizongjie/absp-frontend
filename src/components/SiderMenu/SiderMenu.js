@@ -220,7 +220,6 @@ export default class SiderMenu extends PureComponent {
       >
         <div className={styles.logo} key="logo">
           <Link to="/">
-
             <img className={collapsed ? styles.icon : ''} src={collapsed ? icon : logo} alt="logo" />
           </Link>
         </div>

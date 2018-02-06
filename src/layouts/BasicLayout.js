@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Layout, Icon, message } from 'antd';
 import DocumentTitle from 'react-document-title';
 import { connect } from 'dva';
-import { Route, Redirect, Switch, routerRedux } from 'dva/router';
+import { Route, Redirect, Switch } from 'dva/router';
 import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import { enquireScreen } from 'enquire-js';
@@ -93,7 +93,7 @@ class BasicLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = 'Ant Design Pro';
+    let title = '交通银行资产证券化平台';
     if (routerData[pathname] && routerData[pathname].name) {
       title = `${routerData[pathname].name} - ${title}`;
     }
@@ -128,10 +128,6 @@ class BasicLayout extends React.PureComponent {
     });
   }
   handleMenuClick = ({ key }) => {
-    if (key === 'triggerError') {
-      this.props.dispatch(routerRedux.push('/exception/trigger'));
-      return;
-    }
     if (key === 'logout') {
       this.props.dispatch({
         type: 'login/logout',
@@ -168,7 +164,7 @@ class BasicLayout extends React.PureComponent {
         <Layout>
           <Header style={{ padding: 0 }}>
             <GlobalHeader
-              logo={logo}
+              logo={icon}
               currentUser={currentUser}
               fetchingNotices={fetchingNotices}
               notices={notices}
