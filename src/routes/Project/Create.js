@@ -1,15 +1,13 @@
 import React, { PureComponent } from 'react';
+import { Row, Col } from 'antd/lib/grid';
 import { connect } from 'dva';
 import {
-  Form, Input, DatePicker, Select, Button, Card, InputNumber, Radio, Icon, Tooltip,
+  Form, Input, Button, Card, InputNumber,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import styles from './style.less';
+import './style.less';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const { RangePicker } = DatePicker;
-const { TextArea } = Input;
 
 @connect(({ loading }) => ({
   submitting: loading.effects['form/submitRegularForm'],
@@ -29,9 +27,21 @@ export default class Create extends PureComponent {
   }
   render() {
     const { submitting } = this.props;
-    const { getFieldDecorator, getFieldValue } = this.props.form;
+    const { getFieldDecorator } = this.props.form;
 
     const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 7 },
+        md: { span: 3 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 12 },
+        md: { span: 20 },
+      },
+    };
+    const formItemLayout2 = {
       labelCol: {
         xs: { span: 24 },
         sm: { span: 7 },
@@ -50,6 +60,23 @@ export default class Create extends PureComponent {
         sm: { span: 10, offset: 7 },
       },
     };
+
+    const getTxtInpuHalfCol = (key, label, placeholder) => (
+      <Col span={12}>
+        <FormItem
+          {...formItemLayout2}
+          label={label}
+        >
+          {getFieldDecorator(key, {
+            rules: [{
+              required: true, message: `请输入${label}`,
+            }],
+          })(
+            <Input placeholder={placeholder} />
+          )}
+        </FormItem>
+      </Col>
+    );
 
     return (
       <PageHeaderLayout title="ABS项目新增" content="在完成受托机构、券商、评级等中介机构选聘的前提下，为原始权益人提供项目基本信息新增、修改、删除以及查询功能，包括项目名称、参与机构、发行概况等">
@@ -71,109 +98,53 @@ export default class Create extends PureComponent {
                 <Input placeholder="给目标起个名字" />
               )}
             </FormItem>
+            <Row>
+              {getTxtInpuHalfCol('org01', '发起机构', '交通银行')}
+              {getTxtInpuHalfCol('org02', '受托机构', '交银国信')}
+            </Row>
+            <Row>
+              {getTxtInpuHalfCol('org03', '资金保管机构', '兴业银行')}
+              {getTxtInpuHalfCol('org04', '登记/支付代理机构', '中债登')}
+            </Row>
+            <Row>
+              {getTxtInpuHalfCol('org05', '资产服务机构', '上海融孚律师事务所')}
+              {getTxtInpuHalfCol('org06', '评估机构', '深圳市世联资产评估有限公司')}
+            </Row>
+            <Row>
+              {getTxtInpuHalfCol('org07', '信用评级机构', '中债资信')}
+              {getTxtInpuHalfCol('org08', '流动性支持机构', '中证信用增进股份有限公司')}
+            </Row>
+            <Row>
+              {getTxtInpuHalfCol('org09', '承销商/簿记管理人', '招商证券')}
+              {getTxtInpuHalfCol('org10', '律师', '北京市金杜律师事务所')}
+            </Row>
+            <Row>
+              {getTxtInpuHalfCol('org11', '会计师', '普华永道')}
+            </Row>
             <FormItem
               {...formItemLayout}
-              label="起止日期"
+              label={<span>发行规模</span>}
             >
-              {getFieldDecorator('date', {
+              {getFieldDecorator('scope', {
                 rules: [{
-                  required: true, message: '请选择起止日期',
+                  required: true, message: '请输入发行规模',
                 }],
               })(
-                <RangePicker style={{ width: '100%' }} placeholder={['开始日期', '结束日期']} />
+                <InputNumber placeholder="请输入" style={{ width: '200px' }} />
               )}
+              <span> 亿元</span>
             </FormItem>
             <FormItem
               {...formItemLayout}
-              label="目标描述"
+              label="基础资产"
             >
-              {getFieldDecorator('goal', {
+              {getFieldDecorator('title', {
                 rules: [{
-                  required: true, message: '请输入目标描述',
+                  required: true, message: '请输入基础资产',
                 }],
               })(
-                <TextArea style={{ minHeight: 32 }} placeholder="请输入你的阶段性工作目标" rows={4} />
+                <Input placeholder="小微企业、个人按揭贷款" />
               )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="衡量标准"
-            >
-              {getFieldDecorator('standard', {
-                rules: [{
-                  required: true, message: '请输入衡量标准',
-                }],
-              })(
-                <TextArea style={{ minHeight: 32 }} placeholder="请输入衡量标准" rows={4} />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  客户
-                  <em className={styles.optional}>
-                    （选填）
-                    <Tooltip title="目标的服务对象">
-                      <Icon type="info-circle-o" style={{ marginRight: 4 }} />
-                    </Tooltip>
-                  </em>
-                </span>
-              }
-            >
-              {getFieldDecorator('client')(
-                <Input placeholder="请描述你服务的客户，内部客户直接 @姓名／工号" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={<span>邀评人<em className={styles.optional}>（选填）</em></span>}
-            >
-              {getFieldDecorator('invites')(
-                <Input placeholder="请直接 @姓名／工号，最多可邀请 5 人" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={<span>权重<em className={styles.optional}>（选填）</em></span>}
-            >
-              {getFieldDecorator('weight')(
-                <InputNumber placeholder="请输入" min={0} max={100} />
-              )}
-              <span>%</span>
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="目标公开"
-              help="客户、邀评人默认被分享"
-            >
-              <div>
-                {getFieldDecorator('public', {
-                  initialValue: '1',
-                })(
-                  <Radio.Group>
-                    <Radio value="1">公开</Radio>
-                    <Radio value="2">部分公开</Radio>
-                    <Radio value="3">不公开</Radio>
-                  </Radio.Group>
-                )}
-                <FormItem style={{ marginBottom: 0 }}>
-                  {getFieldDecorator('publicUsers')(
-                    <Select
-                      mode="multiple"
-                      placeholder="公开给"
-                      style={{
-                        margin: '8px 0',
-                        display: getFieldValue('public') === '2' ? 'block' : 'none',
-                      }}
-                    >
-                      <Option value="1">同事甲</Option>
-                      <Option value="2">同事乙</Option>
-                      <Option value="3">同事丙</Option>
-                    </Select>
-                  )}
-                </FormItem>
-              </div>
             </FormItem>
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>
