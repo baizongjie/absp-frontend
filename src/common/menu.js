@@ -17,7 +17,7 @@ const menuData = [{
     name: '项目列表查询',
     path: 'list',
   }, {
-    name: '项目列表查询',
+    name: '项目明细',
     path: 'detail',
   }],
 }, {

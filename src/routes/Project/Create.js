@@ -33,24 +33,24 @@ export default class Create extends PureComponent {
       labelCol: {
         xs: { span: 24 },
         sm: { span: 7 },
-        md: { span: 3 },
+        md: { span: 5 },
       },
       wrapperCol: {
         xs: { span: 24 },
         sm: { span: 12 },
-        md: { span: 20 },
+        md: { span: 18 },
       },
     };
     const formItemLayout2 = {
       labelCol: {
         xs: { span: 24 },
         sm: { span: 7 },
-        md: { span: 6 },
+        md: { span: 10 },
       },
       wrapperCol: {
         xs: { span: 24 },
         sm: { span: 12 },
-        md: { span: 16 },
+        md: { span: 12 },
       },
     };
 
@@ -121,36 +121,29 @@ export default class Create extends PureComponent {
             <Row>
               {getTxtInpuHalfCol('org11', '会计师', '普华永道')}
             </Row>
-            <FormItem
-              {...formItemLayout}
-              label={<span>发行规模</span>}
-            >
-              {getFieldDecorator('scope', {
-                rules: [{
-                  required: true, message: '请输入发行规模',
-                }],
-              })(
-                <InputNumber placeholder="请输入" style={{ width: '200px' }} />
-              )}
-              <span> 亿元</span>
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="基础资产"
-            >
-              {getFieldDecorator('assets', {
-                rules: [{
-                  required: true, message: '请输入基础资产',
-                }],
-              })(
-                <Input placeholder="小微企业、个人按揭贷款" />
-              )}
-            </FormItem>
+            <Row>
+              <Col span={12}>
+                <FormItem
+                  {...formItemLayout2}
+                  label={<span>发行规模</span>}
+                >
+                  {getFieldDecorator('scope', {
+                    rules: [{
+                      required: true, message: '请输入发行规模',
+                    }],
+                  })(
+                    <InputNumber placeholder="请输入" style={{ width: '120px' }} />
+                  )}
+                  <span> 亿元</span>
+                </FormItem>
+              </Col>
+              {getTxtInpuHalfCol('assets', '基础资产', '小微企业、个人按揭贷款')}
+            </Row>
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>
                 提交
               </Button>
-              <Button style={{ marginLeft: 8 }}>保存</Button>
+              <Button style={{ marginLeft: 12 }}>保存</Button>
             </FormItem>
           </Form>
         </Card>

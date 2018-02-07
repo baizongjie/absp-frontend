@@ -11,3 +11,10 @@ export async function createAbsProject(params) {
     },
   });
 }
+
+/**
+ * 查询资产证券化项目
+ */
+export async function queryAbsProjectList() {
+  return request('/api/v1/queryAbsProjectList');
+}

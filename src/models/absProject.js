@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { createAbsProject } from '../services/abs';
+import { createAbsProject, queryAbsProjectList } from '../services/abs';
 
 export default {
   namespace: 'absProject',
@@ -15,6 +15,13 @@ export default {
         payload: Array.isArray(response) ? response : [],
       });
     },
+    *queryAbsProjectList(_, { call, put }) {
+      const response = yield call(queryAbsProjectList);
+      yield put({
+        type: 'showProjectList',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
@@ -23,6 +30,12 @@ export default {
       return {
         ...state,
         notice: action.payload,
+      };
+    },
+    showProjectList(state, action) {
+      return {
+        ...state,
+        data: action.payload,
       };
     },
   },
