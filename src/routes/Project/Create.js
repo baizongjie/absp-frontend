@@ -19,7 +19,7 @@ export default class Create extends PureComponent {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         this.props.dispatch({
-          type: 'form/submitRegularForm',
+          type: 'absProject/createAbsProject',
           payload: values,
         });
       }
@@ -138,7 +138,7 @@ export default class Create extends PureComponent {
               {...formItemLayout}
               label="基础资产"
             >
-              {getFieldDecorator('title', {
+              {getFieldDecorator('assets', {
                 rules: [{
                   required: true, message: '请输入基础资产',
                 }],

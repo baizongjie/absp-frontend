@@ -352,9 +352,9 @@ mark {
 }
 @font-face {
   font-family: 'anticon';
-  src: url('https://at.alicdn.com/t/font_148784_dky7e838xq4obt9.eot');
+  src: url('/antd/iconFont/iconfont.eot');
   /* IE9*/
-  src: url('https://at.alicdn.com/t/font_148784_dky7e838xq4obt9.woff') format('woff'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('https://at.alicdn.com/t/font_148784_dky7e838xq4obt9.ttf') format('truetype'), /* iOS 4.1- */ url('https://at.alicdn.com/t/font_148784_dky7e838xq4obt9.svg#iconfont') format('svg');
+  src: url('/antd/iconFont/iconfont.woff') format('woff'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/ url('/antd/iconFont/iconfont.svg#iconfont') format('svg');
 }
 .anticon {
   display: inline-block;

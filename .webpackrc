@@ -2,7 +2,7 @@
   "entry": "src/index.js",
   "extraBabelPlugins": [
     "transform-decorators-legacy",
-    ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": true }]
+    ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": false }]
   ],
   "env": {
     "development": {
@@ -17,6 +17,6 @@
     "template": "./src/index.ejs"
   },
   "publicPath": "/",
-  "disableDynamicImport": true,
+  "disableDynamicImport": false,
   "hash": true
 }
