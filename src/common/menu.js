@@ -6,7 +6,7 @@ const menuData = [{
   path: 'project',
   children: [{
     name: '项目新增',
-    path: 'add',
+    path: 'create',
   }, {
     name: '项目修改',
     path: 'modify',
