@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { createAbsProject, queryAbsProjectList } from '../services/abs';
+import { createAbsProject, queryAbsProjectList, removeAbsProject } from '../services/abs';
 
 export default {
   namespace: 'absProject',
@@ -13,6 +13,15 @@ export default {
       yield put({
         type: 'createAbsProjectSuccess',
         payload: Array.isArray(response) ? response : [],
+      });
+    },
+    *removeAbsProject({ payload }, { call, put }) {
+      const { projectId } = payload;
+      yield call(removeAbsProject, projectId);
+      const response = yield call(queryAbsProjectList);
+      yield put({
+        type: 'showProjectList',
+        payload: response,
       });
     },
     *queryAbsProjectList(_, { call, put }) {

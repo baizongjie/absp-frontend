@@ -18,7 +18,7 @@ const menuData = [{
     path: 'list',
   }, {
     name: '项目明细',
-    path: 'detail',
+    path: 'detail/demo',
   }],
 }, {
   name: 'dashboard',

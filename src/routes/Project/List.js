@@ -1,87 +1,12 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Row, Col, Card, Modal, Form, Input, Button, Table, message, Divider } from 'antd';
+import { Row, Col, Card, Form, Input, Button, Table, Divider, Popconfirm } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './style.less';
 
 const FormItem = Form.Item;
-const columns = [
-  {
-    title: '项目名称',
-    dataIndex: 'title',
-  },
-  {
-    title: '发行机构',
-    dataIndex: 'org1',
-  },
-  {
-    title: '受托机构',
-    dataIndex: 'org2',
-  },
-  {
-    title: '承销商',
-    dataIndex: 'org3',
-  },
-  {
-    title: '发行规模',
-    dataIndex: 'scope',
-    render: value => `${value} 亿元`,
-  },
-  {
-    title: '基础资产',
-    dataIndex: 'assets',
-  },
-  {
-    title: '详情',
-    render: () => (
-      <Fragment>
-        <a href="">查看</a>
-      </Fragment>
-    ),
-  },
-  {
-    title: '操作',
-    render: () => (
-      <Fragment>
-        <a href="">删除</a>
-        <Divider type="vertical" />
-        <a href="">修改</a>
-      </Fragment>
-    ),
-  },
-];
-
-const CreateForm = Form.create()((props) => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
-  const okHandle = () => {
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      handleAdd(fieldsValue);
-    });
-  };
-  return (
-    <Modal
-      title="新建规则"
-      visible={modalVisible}
-      onOk={okHandle}
-      onCancel={() => handleModalVisible()}
-    >
-      <FormItem
-        labelCol={{ span: 5 }}
-        wrapperCol={{ span: 15 }}
-        label="描述"
-      >
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: 'Please input some description...' }],
-        })(
-          <Input placeholder="请输入" />
-        )}
-      </FormItem>
-    </Modal>
-  );
-});
 
 @connect(({ absProject, loading }) => ({
   absProject,
@@ -89,14 +14,65 @@ const CreateForm = Form.create()((props) => {
 }))
 @Form.create()
 export default class List extends PureComponent {
-  state = {
-    modalVisible: false,
-  };
-
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
       type: 'absProject/queryAbsProjectList',
+    });
+  }
+
+  columns = [
+    {
+      title: '项目名称',
+      dataIndex: 'projectName',
+    },
+    {
+      title: '发行机构',
+      dataIndex: 'initiator',
+    },
+    {
+      title: '受托机构',
+      dataIndex: 'trustee',
+    },
+    {
+      title: '承销商',
+      dataIndex: 'underwriters',
+    },
+    {
+      title: '发行规模',
+      dataIndex: 'scale',
+    },
+    {
+      title: '基础资产',
+      dataIndex: 'basicAssets',
+    },
+    {
+      title: '详情',
+      render: () => (
+        <Fragment>
+          <a href="">查看</a>
+        </Fragment>
+      ),
+    },
+    {
+      title: '操作',
+      render: (text, record) => (
+        <Fragment>
+          <Popconfirm title="确定要删除这条项目信息么？" onConfirm={() => this.removeProject(record)} okText="确定删除" cancelText="取消">
+            <a href="#">删除</a>
+          </Popconfirm>
+          <Divider type="vertical" />
+          <a href="">修改</a>
+        </Fragment>
+      ),
+    },
+  ];
+
+  removeProject = (record) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'absProject/removeAbsProject',
+      payload: { projectId: record.id },
     });
   }
 
@@ -108,35 +84,8 @@ export default class List extends PureComponent {
   handleSearch = (e) => {
     e.preventDefault();
   }
-
-  handleModalVisible = (flag) => {
-    this.setState({
-      modalVisible: !!flag,
-    });
-  }
-
-  handleAdd = (fields) => {
-    this.props.dispatch({
-      type: 'rule/add',
-      payload: {
-        description: fields.desc,
-      },
-    });
-
-    message.success('添加成功');
-    this.setState({
-      modalVisible: false,
-    });
-  }
-
   render() {
     const { absProject: { data }, loading, form: { getFieldDecorator } } = this.props;
-    const { modalVisible } = this.state;
-    const parentMethods = {
-      handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible,
-    };
-
     return (
       <PageHeaderLayout title="查询表格">
         <Card bordered={false}>
@@ -170,17 +119,13 @@ export default class List extends PureComponent {
             </div>
             <Table
               loading={loading}
-              rowKey={record => record.key}
-              columns={columns}
+              rowKey={record => record.id}
+              columns={this.columns}
               dataSource={data}
               onChange={this.handleTableChange}
             />
           </div>
         </Card>
-        <CreateForm
-          {...parentMethods}
-          modalVisible={modalVisible}
-        />
       </PageHeaderLayout>
     );
   }

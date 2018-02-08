@@ -81,6 +81,10 @@ export const getRouterData = (app) => {
     '/project/list': {
       component: dynamicWrapper(app, ['absProject'], () => import('../routes/Project/List')),
     },
+    // 资产证券化项目明细查询
+    '/project/detail/:pid': {
+      component: dynamicWrapper(app, ['profile'], () => import('../routes/Project/Detail')),
+    },
     '/dashboard/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
     },

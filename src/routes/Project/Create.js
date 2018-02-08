@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd/lib/grid';
 import { connect } from 'dva';
 import {
-  Form, Input, Button, Card, InputNumber,
+  Form, Input, Button, Card,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import './style.less';
@@ -90,7 +90,7 @@ export default class Create extends PureComponent {
               {...formItemLayout}
               label="项目名称"
             >
-              {getFieldDecorator('title', {
+              {getFieldDecorator('projectName', {
                 rules: [{
                   required: true, message: '请输入项目名称',
                 }],
@@ -99,45 +99,31 @@ export default class Create extends PureComponent {
               )}
             </FormItem>
             <Row>
-              {getTxtInpuHalfCol('org01', '发起机构', '交通银行')}
-              {getTxtInpuHalfCol('org02', '受托机构', '交银国信')}
+              {getTxtInpuHalfCol('initiator', '发起机构', '交通银行')}
+              {getTxtInpuHalfCol('trustee', '受托机构', '交银国信')}
             </Row>
             <Row>
-              {getTxtInpuHalfCol('org03', '资金保管机构', '兴业银行')}
-              {getTxtInpuHalfCol('org04', '登记/支付代理机构', '中债登')}
+              {getTxtInpuHalfCol('depositary', '资金保管机构', '兴业银行')}
+              {getTxtInpuHalfCol('agent', '登记/支付代理机构', '中债登')}
             </Row>
             <Row>
-              {getTxtInpuHalfCol('org05', '资产服务机构', '上海融孚律师事务所')}
-              {getTxtInpuHalfCol('org06', '评估机构', '深圳市世联资产评估有限公司')}
+              {getTxtInpuHalfCol('assetService', '资产服务机构', '上海融孚律师事务所')}
+              {getTxtInpuHalfCol('assessor', '评估机构', '深圳市世联资产评估有限公司')}
             </Row>
             <Row>
-              {getTxtInpuHalfCol('org07', '信用评级机构', '中债资信')}
-              {getTxtInpuHalfCol('org08', '流动性支持机构', '中证信用增进股份有限公司')}
+              {getTxtInpuHalfCol('creditRater', '信用评级机构', '中债资信')}
+              {getTxtInpuHalfCol('liquiditySupporter', '流动性支持机构', '中证信用增进股份有限公司')}
             </Row>
             <Row>
-              {getTxtInpuHalfCol('org09', '承销商/簿记管理人', '招商证券')}
-              {getTxtInpuHalfCol('org10', '律师', '北京市金杜律师事务所')}
+              {getTxtInpuHalfCol('underwriters', '承销商/簿记管理人', '招商证券')}
+              {getTxtInpuHalfCol('lawyer', '律师', '北京市金杜律师事务所')}
             </Row>
             <Row>
-              {getTxtInpuHalfCol('org11', '会计师', '普华永道')}
+              {getTxtInpuHalfCol('accountant', '会计师', '普华永道')}
             </Row>
             <Row>
-              <Col span={12}>
-                <FormItem
-                  {...formItemLayout2}
-                  label={<span>发行规模</span>}
-                >
-                  {getFieldDecorator('scope', {
-                    rules: [{
-                      required: true, message: '请输入发行规模',
-                    }],
-                  })(
-                    <InputNumber placeholder="请输入" style={{ width: '120px' }} />
-                  )}
-                  <span> 亿元</span>
-                </FormItem>
-              </Col>
-              {getTxtInpuHalfCol('assets', '基础资产', '小微企业、个人按揭贷款')}
+              {getTxtInpuHalfCol('scale', '发行规模', '100亿元')}
+              {getTxtInpuHalfCol('basicAssets', '基础资产', '小微企业、个人按揭贷款')}
             </Row>
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>

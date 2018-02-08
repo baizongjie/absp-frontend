@@ -13,15 +13,7 @@ const noProxy = process.env.NO_PROXY === 'true';
 
 // 代码中会兼容本地 service mock 以及部署站点的静态数据
 const proxy = {
-  'GET /api/v1/queryAbsProjectList': [{
-    key: 0,
-    title: '交城2017年第一期不良资产支持证券',
-    org1: '交通银行',
-    org2: '交银国信',
-    org3: '招商证券',
-    scope: 10,
-    assets: '小微企业、个人按揭贷款'
-  }],
+  'GET /api/v1/*': 'http://localhost:9010/',
   'POST /api/v1/*': 'http://localhost:9010/',
   // 支持值为 Object 和 Array
   'GET /api/currentUser': {
