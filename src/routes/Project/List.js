@@ -48,9 +48,11 @@ export default class List extends PureComponent {
     },
     {
       title: '详情',
-      render: () => (
+      render: (text, record) => (
         <Fragment>
-          <a href="">查看</a>
+          <Link to={`/project/detail/${record.id}`}>
+            查看
+          </Link>
         </Fragment>
       ),
     },
@@ -62,7 +64,9 @@ export default class List extends PureComponent {
             <a href="#">删除</a>
           </Popconfirm>
           <Divider type="vertical" />
-          <a href="">修改</a>
+          <Link to={`/project/modify/${record.id}`}>
+            修改
+          </Link>
         </Fragment>
       ),
     },

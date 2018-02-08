@@ -1,5 +1,4 @@
-import { message } from 'antd';
-import { createAbsProject, queryAbsProjectList, removeAbsProject } from '../services/abs';
+import { createAbsProject, queryAbsProjectList, removeAbsProject, queryAbsProjectDetail, modifyAbsProject } from '../services/abs';
 
 export default {
   namespace: 'absProject',
@@ -24,6 +23,13 @@ export default {
         payload: response,
       });
     },
+    *modifyAbsProject({ payload }, { call, put }) {
+      const response = yield call(modifyAbsProject, payload);
+      yield put({
+        type: 'createAbsProjectSuccess',
+        payload: Array.isArray(response) ? response : [],
+      });
+    },
     *queryAbsProjectList(_, { call, put }) {
       const response = yield call(queryAbsProjectList);
       yield put({
@@ -31,11 +37,18 @@ export default {
         payload: response,
       });
     },
+    *queryAbsProjectDetail({ payload }, { call, put }) {
+      const { projectId } = payload;
+      const response = yield call(queryAbsProjectDetail, projectId);
+      yield put({
+        type: 'showProjectDetail',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
     createAbsProjectSuccess(state, action) {
-      message.success('提交成功');
       return {
         ...state,
         notice: action.payload,
@@ -45,6 +58,12 @@ export default {
       return {
         ...state,
         data: action.payload,
+      };
+    },
+    showProjectDetail(state, action) {
+      return {
+        ...state,
+        detail: action.payload,
       };
     },
   },

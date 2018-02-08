@@ -77,13 +77,21 @@ export const getRouterData = (app) => {
     '/project/create': {
       component: dynamicWrapper(app, ['absProject'], () => import('../routes/Project/Create')),
     },
+    // 资产证券化项目信息修改
+    '/project/modify/:pid': {
+      component: dynamicWrapper(app, ['absProject'], () => import('../routes/Project/Modify')),
+    },
+    // 资产证券化项目明细查询
+    '/project/detail/:pid': {
+      component: dynamicWrapper(app, ['absProject'], () => import('../routes/Project/Detail')),
+    },
     // 资产证券化项目列表查询
     '/project/list': {
       component: dynamicWrapper(app, ['absProject'], () => import('../routes/Project/List')),
     },
-    // 资产证券化项目明细查询
-    '/project/detail/:pid': {
-      component: dynamicWrapper(app, ['profile'], () => import('../routes/Project/Detail')),
+    // 资产证券化项目列表查询
+    '/project/success': {
+      component: dynamicWrapper(app, ['absProject'], () => import('../routes/Project/Success')),
     },
     '/dashboard/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),

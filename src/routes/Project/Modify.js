@@ -9,18 +9,30 @@ import './style.less';
 
 const FormItem = Form.Item;
 
-@connect(({ loading }) => ({
-  submitting: loading.effects['absProject/createAbsProject'],
+@connect(({ absProject, loading }) => ({
+  absProject,
+  submitting: loading.effects['absProject/modifyAbsProject'],
 }))
 @Form.create()
-export default class Create extends PureComponent {
+export default class Modify extends PureComponent {
+  componentDidMount() {
+    // 获取url中的pid参数
+    const { dispatch, match: { params: { pid } } } = this.props;
+    dispatch({
+      type: 'absProject/queryAbsProjectDetail',
+      payload: {
+        projectId: pid,
+      },
+    });
+  }
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
+      const projectId = this.props.absProject.detail.id;
       if (!err) {
         this.props.dispatch({
-          type: 'absProject/createAbsProject',
-          payload: values,
+          type: 'absProject/modifyAbsProject',
+          payload: { ...values, projectId },
         });
       }
     });
@@ -28,7 +40,6 @@ export default class Create extends PureComponent {
   render() {
     const { submitting } = this.props;
     const { getFieldDecorator } = this.props.form;
-
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -68,6 +79,7 @@ export default class Create extends PureComponent {
           label={label}
         >
           {getFieldDecorator(key, {
+            initialValue: this.props.absProject.detail && this.props.absProject.detail[key],
             rules: [{
               required: true, message: `请输入${label}`,
             }],
@@ -79,7 +91,7 @@ export default class Create extends PureComponent {
     );
 
     return (
-      <PageHeaderLayout title="ABS项目新增" content="在完成受托机构、券商、评级等中介机构选聘的前提下，为原始权益人提供项目基本信息新增、修改、删除以及查询功能，包括项目名称、参与机构、发行概况等">
+      <PageHeaderLayout title="ABS项目信息修改">
         <Card bordered={false}>
           <Form
             onSubmit={this.handleSubmit}
@@ -91,6 +103,8 @@ export default class Create extends PureComponent {
               label="项目名称"
             >
               {getFieldDecorator('projectName', {
+                initialValue: this.props.absProject.detail &&
+                              this.props.absProject.detail.projectName,
                 rules: [{
                   required: true, message: '请输入项目名称',
                 }],

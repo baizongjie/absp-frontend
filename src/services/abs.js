@@ -13,6 +13,18 @@ export async function createAbsProject(params) {
 }
 
 /**
+ * 修改资产证券化项目信息
+ */
+export async function modifyAbsProject(params) {
+  return request('/api/v1/modifyAbsProject', {
+    method: 'POST',
+    body: {
+      ...params,
+    },
+  });
+}
+
+/**
  * 查询资产证券化项目
  */
 export async function queryAbsProjectList() {

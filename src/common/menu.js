@@ -8,17 +8,8 @@ const menuData = [{
     name: '项目新增',
     path: 'create',
   }, {
-    name: '项目修改',
-    path: 'modify',
-  }, {
-    name: '项目删除',
-    path: 'remove',
-  }, {
     name: '项目列表查询',
     path: 'list',
-  }, {
-    name: '项目明细',
-    path: 'detail/demo',
   }],
 }, {
   name: 'dashboard',
