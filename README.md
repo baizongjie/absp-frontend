@@ -33,7 +33,7 @@ antd pro相关资料可从如下地址获取
 - 更新日志: http://pro.ant.design/docs/changelog-cn
 - 常见问题：http://pro.ant.design/docs/faq-cn
 
-antd 组件库资料可以查阅一下地址
+antd 组件库资料可以查阅以下地址
 
 - 首页: https://ant.design/index-cn
 
