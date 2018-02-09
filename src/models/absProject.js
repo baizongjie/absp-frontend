@@ -1,3 +1,4 @@
+import { message } from 'antd';
 import { createAbsProject, queryAbsProjectList, removeAbsProject, queryAbsProjectDetail, modifyAbsProject } from '../services/abs';
 
 export default {
@@ -49,6 +50,7 @@ export default {
 
   reducers: {
     createAbsProjectSuccess(state, action) {
+      message.success('提交成功');
       return {
         ...state,
         notice: action.payload,
