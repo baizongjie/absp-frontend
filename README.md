@@ -1,94 +1,42 @@
-English | [简体中文](./README.zh-CN.md)
+# ABS平台
 
-# Ant Design Pro
+本平台基于antd pro框架开发
 
-[![](https://img.shields.io/travis/ant-design/ant-design-pro/master.svg?style=flat-square)](https://travis-ci.org/ant-design/ant-design-pro) [![Build status](https://ci.appveyor.com/api/projects/status/67fxu2by3ibvqtat/branch/master?svg=true)](https://ci.appveyor.com/project/afc163/ant-design-pro/branch/master)  [![Gitter](https://badges.gitter.im/ant-design/ant-design-pro.svg)](https://gitter.im/ant-design/ant-design-pro?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-An out-of-box UI solution for enterprise applications as a React boilerplate.
-
-![](https://gw.alipayobjects.com/zos/rmsportal/xEdBqwSzvoSapmnSnYjU.png)
-
-- Preview: http://preview.pro.ant.design
-- Home Page: http://pro.ant.design
-- Documentation: http://pro.ant.design/docs/getting-started
-- ChangeLog: http://pro.ant.design/docs/changelog
-- FAQ: http://pro.ant.design/docs/faq
-
-## Translation Recruitment :loudspeaker:
-
-We need your help: https://github.com/ant-design/ant-design-pro/issues/120
-
-## Features
-
-- :gem: **Neat Design**: Follow [Ant Design specification](http://ant.design/)
-- :triangular_ruler: **Common Templates**: Typical templates for enterprise applications
-- :rocket: **State of The Art Development**: Newest development stack of React/dva/antd
-- :iphone: **Responsive**: Designed for varies of screen size
-- :art: **Themeing**: Customizable theme with simple config
-- :globe_with_meridians: **International**: Built-in i18n solution
-- :gear: **Best Practice**: Solid workflow make your code health
-- :1234: **Mock development**: Easy to use mock development solution
-- :white_check_mark: **UI Test**: Fly safely with unit test and e2e test
-
-## Templates
-
-```
-- Dashboard
-  - Analytic
-  - Monitor
-  - Workspace
-- Form
-  - Basic Form
-  - Step Form
-  - Advanced From
-- List
-  - Standard Table
-  - Standard List
-  - Card List
-  - Search List (Project/Applications/Article)
-- Profile
-  - Simple Profile
-  - Advanced Profile
-- Result
-  - Success
-  - Failed
-- Exception
-  - 403
-  - 404
-  - 500
-- User
-  - Login
-  - Register
-  - Register Result
-```
-
-## Usage
+## 使用
 
 ```bash
-$ git clone https://github.com/ant-design/ant-design-pro.git --depth=1
-$ cd ant-design-pro
 $ npm install
-$ npm start         # visit http://localhost:8000
+$ npm start         # 访问 http://localhost:8000
 ```
-
-Or you can use the command tool: [ant-design-pro-cli](https://github.com/ant-design/ant-design-pro-cli)
+## 编译
 
 ```bash
-$ npm install ant-design-pro-cli -g
-$ mkdir pro-demo && cd pro-demo
-$ pro new
+$ npm install
+$ npm run build
 ```
 
-More instruction at [documentation](http://pro.ant.design/docs/getting-started).
+## 文档主要目录结构和文件说明
 
-## Compatibility
+- `./roadhogrc.mock.js` 用于配置前后台ajax请求mock或代理
+- `./src/common/router.js` 用于配置url路由关系,绑定页面组件
+- `./src/common/menu.js` 用于配置菜单
+- `./src/routes/` 该文件夹放置具体的模块页面，每个模块有独立文件夹，开发前建议学习React相关知识，组件选用antd组件库
+- `./src/model/` 该文件夹放置模块对应的store和reducer信息，具体使用前建议学习Redux相关知识
+- `./src/services/` 该文件夹放置前后台ajax请求逻辑
 
-Modern browsers and IE11.
+## 参考资料
 
-## Contributing
+antd pro相关资料可从如下地址获取
 
-Any Contribution of following ways will be welcome:
+- 预览：http://preview.pro.ant.design
+- 首页：http://pro.ant.design/index-cn
+- 更新日志: http://pro.ant.design/docs/changelog-cn
+- 常见问题：http://pro.ant.design/docs/faq-cn
 
-- Use Ant Design Pro in your daily work.
-- Submit [issue](http://github.com/ant-design/ant-design-pro/issues) to report bug or ask questions.
-- Propose [pull request](http://github.com/ant-design/ant-design-pro/pulls) to improve our code.
+antd 组件库资料可以查阅一下地址
+
+- 首页: https://ant.design/index-cn
+
+## 兼容性
+
+现代浏览器及 IE11。
