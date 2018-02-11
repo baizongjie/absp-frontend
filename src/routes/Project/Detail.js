@@ -34,7 +34,7 @@ export default class Detail extends Component {
       assessor,
       creditRater,
       liquiditySupporter,
-      underwriters,
+      underwriter,
       lawyer,
       accountant,
       scale,
@@ -68,7 +68,7 @@ export default class Detail extends Component {
             <Description term="流动性支持机构">
               {liquiditySupporter}
             </Description>
-            <Description term="承销商/簿记管理人">{underwriters}</Description>
+            <Description term="承销商/簿记管理人">{underwriter}</Description>
             <Description term="律师">{lawyer}</Description>
             <Description term="会计师">{accountant}</Description>
           </DescriptionList>

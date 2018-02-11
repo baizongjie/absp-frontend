@@ -129,7 +129,7 @@ export default class Modify extends PureComponent {
               {getTxtInpuHalfCol('liquiditySupporter', '流动性支持机构', '中证信用增进股份有限公司')}
             </Row>
             <Row>
-              {getTxtInpuHalfCol('underwriters', '承销商/簿记管理人', '招商证券')}
+              {getTxtInpuHalfCol('underwriter', '承销商/簿记管理人', '招商证券')}
               {getTxtInpuHalfCol('lawyer', '律师', '北京市金杜律师事务所')}
             </Row>
             <Row>

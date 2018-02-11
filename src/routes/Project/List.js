@@ -36,7 +36,7 @@ export default class List extends PureComponent {
     },
     {
       title: '承销商',
-      dataIndex: 'underwriters',
+      dataIndex: 'underwriter',
     },
     {
       title: '发行规模',
