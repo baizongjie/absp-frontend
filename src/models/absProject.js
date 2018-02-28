@@ -1,4 +1,4 @@
-import { createAbsProject, queryAbsProjectList, removeAbsProject, queryAbsProjectDetail, modifyAbsProject } from '../services/abs';
+import { createAbsProject, queryAbsProjectList, removeAbsProject, queryAbsProjectDetail, modifyAbsProject } from '../services/absProject';
 
 export default {
   namespace: 'absProject',
@@ -21,8 +21,8 @@ export default {
       });
     },
     *modifyAbsProject({ payload, callback }, { call }) {
-      const response = yield call(modifyAbsProject, payload);
-      callback(response.projectId);
+      yield call(modifyAbsProject, payload);
+      callback();
     },
     *queryAbsProjectList(_, { call, put }) {
       const response = yield call(queryAbsProjectList);
