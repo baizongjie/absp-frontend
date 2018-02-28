@@ -98,16 +98,19 @@ const menuData = [{
   children: [{
     name: '403',
     path: '403',
+    hideInMenu: true,
   }, {
     name: '404',
     path: '404',
+    hideInMenu: true,
   }, {
     name: '500',
     path: '500',
+    hideInMenu: true,
   }, {
     name: '触发异常',
     path: 'trigger',
-    hideInMenu: true,
+    // hideInMenu: true,
   }],
 }, {
   name: '账户',

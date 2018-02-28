@@ -90,8 +90,8 @@ export const getRouterData = (app) => {
       component: dynamicWrapper(app, ['absProject'], () => import('../routes/Project/List')),
     },
     // 资产证券化项目列表查询
-    '/project/success': {
-      component: dynamicWrapper(app, ['absProject'], () => import('../routes/Project/Success')),
+    '/project/success/:pid': {
+      component: dynamicWrapper(app, [], () => import('../routes/Project/Success')),
     },
     '/dashboard/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd/lib/grid';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import {
   Form, Input, Button, Card,
 } from 'antd';
@@ -33,6 +34,9 @@ export default class Modify extends PureComponent {
         this.props.dispatch({
           type: 'absProject/modifyAbsProject',
           payload: { ...values, projectId },
+          callback: () => {
+            this.props.dispatch(routerRedux.push(`/project/success/${projectId}`));
+          },
         });
       }
     });

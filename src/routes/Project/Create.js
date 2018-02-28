@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd/lib/grid';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import {
   Form, Input, Button, Card,
 } from 'antd';
@@ -21,6 +22,10 @@ export default class Create extends PureComponent {
         this.props.dispatch({
           type: 'absProject/createAbsProject',
           payload: values,
+          // 增加一个回调，便于在请求完成后执行一些页面的控制逻辑
+          callback: (projectId) => {
+            this.props.dispatch(routerRedux.push(`/project/success/${projectId}`));
+          },
         });
       }
     });
@@ -28,7 +33,6 @@ export default class Create extends PureComponent {
   render() {
     const { submitting } = this.props;
     const { getFieldDecorator } = this.props.form;
-
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
