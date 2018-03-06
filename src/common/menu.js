@@ -23,6 +23,20 @@ const menuData = [{
     path: 'list',
   }],
 }, {
+  name: '流程实例',
+  icon: 'appstore-o',
+  path: 'process',
+  children: [{
+    name: '发起流程',
+    path: 'create',
+  }, {
+    name: '待办任务',
+    path: 'todo/list',
+  }, {
+    name: '已办任务',
+    path: 'done/list',
+  }],
+}, {
   name: 'dashboard',
   icon: 'dashboard',
   path: 'dashboard',

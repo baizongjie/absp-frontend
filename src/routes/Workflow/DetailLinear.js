@@ -77,6 +77,7 @@ export default class DetailLinear extends Component {
           <Table
             style={{ marginBottom: 16 }}
             pagination={false}
+            rowKey={record => record.id}
             loading={loading}
             dataSource={nodeList}
             columns={nodeColumns}

@@ -37,8 +37,7 @@ const dynamicWrapper = (app, models, component) => {
   return dynamic({
     app,
     models: () => models.filter(
-      model => modelNotExisted(app, model)).map(m => import(`../models/${m}.js`)
-    ),
+      model => modelNotExisted(app, model)).map(m => import(`../models/${m}.js`)),
     // add routerData prop
     component: () => {
       if (!routerDataCache) {
@@ -112,6 +111,22 @@ export const getRouterData = (app) => {
     // 线性工作流明成功创建
     '/workflow/linear/success/:pid': {
       component: dynamicWrapper(app, [], () => import('../routes/Workflow/SuccessLinear')),
+    },
+    // 流程待办列表
+    '/process/todo/list': {
+      component: dynamicWrapper(app, ['absProcess'], () => import('../routes/Process/ListTodo')),
+    },
+    // 流程已办列表
+    '/process/done/list': {
+      component: dynamicWrapper(app, ['absProcess'], () => import('../routes/Process/ListDone')),
+    },
+    // 流程详情
+    '/process/detail/:pid': {
+      component: dynamicWrapper(app, ['absProcess'], () => import('../routes/Process/Detail')),
+    },
+    // 待办流程详情
+    '/process/todo/detail/:pid': {
+      component: dynamicWrapper(app, ['absProcess'], () => import('../routes/Process/Detail')),
     },
     '/dashboard/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),

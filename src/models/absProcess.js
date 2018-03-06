@@ -69,7 +69,7 @@ export default {
     showProcessLogs(state, action) {
       return {
         ...state,
-        detail: action.payload,
+        logs: action.payload,
       };
     },
     showTodoList(state, action) {
@@ -81,7 +81,7 @@ export default {
     showDoneList(state, action) {
       return {
         ...state,
-        detail: action.payload,
+        data: action.payload,
       };
     },
   },
