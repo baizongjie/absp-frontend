@@ -17,7 +17,7 @@ const menuData = [{
   path: 'workflow',
   children: [{
     name: '新增线性工作流',
-    path: 'create/linear',
+    path: 'linear/create',
   }, {
     name: '工作流列表查询',
     path: 'list',

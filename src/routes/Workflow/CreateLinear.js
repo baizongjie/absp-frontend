@@ -59,7 +59,7 @@ class CreateLinear extends PureComponent {
             },
             // 增加一个回调，便于在请求完成后执行一些页面的控制逻辑
             callback: (workflowId) => {
-              dispatch(routerRedux.push(`/workflow/success/${workflowId}`));
+              dispatch(routerRedux.push(`/workflow/linear/success/${workflowId}`));
             },
           });
         }
