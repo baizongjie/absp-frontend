@@ -12,6 +12,17 @@ const menuData = [{
     path: 'list',
   }],
 }, {
+  name: '工作流维护',
+  icon: 'appstore-o',
+  path: 'workflow',
+  children: [{
+    name: '新增线性工作流',
+    path: 'create/linear',
+  }, {
+    name: '工作流列表查询',
+    path: 'list',
+  }],
+}, {
   name: 'dashboard',
   icon: 'dashboard',
   path: 'dashboard',

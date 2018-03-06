@@ -93,6 +93,18 @@ export const getRouterData = (app) => {
     '/project/success/:pid': {
       component: dynamicWrapper(app, [], () => import('../routes/Project/Success')),
     },
+    // 创建线性工作流
+    '/workflow/create/linear': {
+      component: dynamicWrapper(app, ['absWorkflow'], () => import('../routes/Workflow/CreateLinear')),
+    },
+    // 工作流列表查询
+    '/workflow/list': {
+      component: dynamicWrapper(app, ['absWorkflow'], () => import('../routes/Workflow/List')),
+    },
+    // 线性工作流明细查询
+    '/workflow/linearWorkflow/detail/:pid': {
+      component: dynamicWrapper(app, ['absWorkflow'], () => import('../routes/Workflow/DetailLinear')),
+    },
     '/dashboard/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
     },

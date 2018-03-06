@@ -44,7 +44,7 @@ export default {
     showWorkflowDetail(state, action) {
       return {
         ...state,
-        detail: action.payload,
+        ...action.payload,
       };
     },
     showWorkflowList(state, action) {
