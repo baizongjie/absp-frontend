@@ -97,6 +97,10 @@ export const getRouterData = (app) => {
     '/workflow/linear/create': {
       component: dynamicWrapper(app, ['absWorkflow'], () => import('../routes/Workflow/CreateLinear')),
     },
+    // 修改线性工作流
+    '/workflow/linear/modify/:pid': {
+      component: dynamicWrapper(app, ['absWorkflow'], () => import('../routes/Workflow/ModifyLinear')),
+    },
     // 工作流列表查询
     '/workflow/list': {
       component: dynamicWrapper(app, ['absWorkflow'], () => import('../routes/Workflow/List')),

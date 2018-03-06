@@ -64,7 +64,7 @@ export default class List extends PureComponent {
             <a href="#">禁用/启用</a>
           </Popconfirm>
           <Divider type="vertical" />
-          <Link to={`/workflow/modify/${record.id}`}>
+          <Link to={`/workflow/${record.subDocType}/modify/${record.id}`}>
             修改
           </Link>
         </Fragment>
