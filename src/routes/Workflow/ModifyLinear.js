@@ -45,13 +45,8 @@ export default class DetailLinear extends Component {
       },
     });
   }
-  render() {
-    const { form, dispatch, submitting, absWorkflow, loading } = this.props;
-    const { getFieldDecorator, validateFieldsAndScroll, getFieldsError } = form;
-    const { workflowDef = {}, workflowNodes = [] } = absWorkflow;
-    const {
-      workflowName,
-    } = workflowDef;
+
+  getNodeList = (workflowNodes) => {
     const nodeList = [];
     workflowNodes.forEach((element) => {
       const node = element;
@@ -59,6 +54,14 @@ export default class DetailLinear extends Component {
       node.accessOrgsStr = node.accessOrgs.join(',');
       nodeList.push(node);
     });
+    return nodeList;
+  }
+
+  render() {
+    const { form, dispatch, submitting, absWorkflow, loading } = this.props;
+    const { getFieldDecorator, validateFieldsAndScroll, getFieldsError } = form;
+    const { workflowDef = {}, workflowNodes = [] } = absWorkflow;
+    const nodeList = this.getNodeList(workflowNodes);
     const validate = () => {
       validateFieldsAndScroll((error, values) => {
         const workflowId = workflowDef.id;
@@ -133,7 +136,7 @@ export default class DetailLinear extends Component {
                 <Form.Item label={fieldLabels.workflowName}>
                   {getFieldDecorator('workflowName', {
                     rules: [{ required: true, message: '请输入工作流名称' }],
-                    initialValue: workflowName,
+                    initialValue: workflowDef.workflowName,
                   })(
                     <Input placeholder="请输入工作流名称" />
                   )}

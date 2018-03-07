@@ -1,4 +1,5 @@
 import { startProcess, queryProcessDetail, queryProcessLogs, transferProcess, cancelProcess, queryTodoList, queryDoneList } from '../services/absProcess';
+import { queryWorkflowDetail } from '../services/absWorkflow';
 
 export default {
   namespace: 'absProcess',
@@ -49,6 +50,22 @@ export default {
         payload: response,
       });
     },
+    *queryProcessDetailWithLogsAndWorkflow({ payload }, { call, put }) {
+      const { processId } = payload;
+      const detailResponse = yield call(queryProcessDetail, processId);
+      const logsResponse = yield call(queryProcessLogs, processId);
+      const { workflowId } = detailResponse;
+      const workflowResponse = yield call(queryWorkflowDetail, workflowId);
+      const rspPayload = {
+        detail: detailResponse,
+        logs: logsResponse,
+        ...workflowResponse,
+      };
+      yield put({
+        type: 'showProcessDetailWithLogAndWorkflow',
+        payload: rspPayload,
+      });
+    },
     *transferProcess({ payload }, { call, put }) {
       yield call(transferProcess, payload);
       const response = yield call(queryTodoList);
@@ -70,6 +87,12 @@ export default {
       return {
         ...state,
         logs: action.payload,
+      };
+    },
+    showProcessDetailWithLogAndWorkflow(state, action) {
+      return {
+        ...state,
+        ...action.payload,
       };
     },
     showTodoList(state, action) {

@@ -41,18 +41,14 @@ export default class DetailLinear extends Component {
     });
   }
 
-  render() {
-    const { absWorkflow, loading } = this.props;
-    const { workflowDef = {}, workflowNodes = [] } = absWorkflow;
-    const {
-      workflowName,
-      enabled,
-      creator,
-      createTime,
-      lastModifier,
-      modifyTime,
-    } = workflowDef;
-    const enabledStr = enabled ? '可用' : '禁用';
+  getEnableStr = (workflowDef) => {
+    if (workflowDef == null) {
+      return '';
+    }
+    return workflowDef.enabled ? '可用' : '禁用';
+  }
+
+  getNodeList = (workflowNodes) => {
     const nodeList = [];
     workflowNodes.forEach((element) => {
       const node = element;
@@ -60,17 +56,25 @@ export default class DetailLinear extends Component {
       node.accessOrgsStr = node.accessOrgs.join(',');
       nodeList.push(node);
     });
+    return nodeList;
+  }
+
+  render() {
+    const { absWorkflow, loading } = this.props;
+    const { workflowDef = {}, workflowNodes = [] } = absWorkflow;
+    const enabledStr = this.getEnableStr(workflowDef);
+    const nodeList = this.getNodeList(workflowNodes);
     return (
       <PageHeaderLayout title="线性工作流详情">
         <Card bordered={false}>
           <DescriptionList size="large" title="工作流基础信息" style={{ marginBottom: 32 }}>
-            <Description term="工作流名称">{workflowName}</Description>
+            <Description term="工作流名称">{workflowDef.workflowName}</Description>
             <Description term="工作流类型">线性工作流</Description>
             <Description term="状态">{enabledStr}</Description>
-            <Description term="创建人">{creator}</Description>
-            <Description term="创建时间">{createTime}</Description>
-            <Description term="最后修改人">{lastModifier}</Description>
-            <Description term="最后修改时间">{modifyTime}</Description>
+            <Description term="创建人">{workflowDef.creator}</Description>
+            <Description term="创建时间">{workflowDef.createTime}</Description>
+            <Description term="最后修改人">{workflowDef.lastModifier}</Description>
+            <Description term="最后修改时间">{workflowDef.modifyTime}</Description>
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>节点清单</div>
