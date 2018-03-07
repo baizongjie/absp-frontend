@@ -12,22 +12,16 @@ const { Tab, UserName, Password, Submit } = Login;
 }))
 export default class LoginPage extends Component {
   state = {
-    type: 'account',
     autoLogin: true,
   }
 
-  onTabChange = (type) => {
-    this.setState({ type });
-  }
-
   handleSubmit = (err, values) => {
-    const { type } = this.state;
     if (!err) {
       this.props.dispatch({
         type: 'login/login',
         payload: {
           ...values,
-          type,
+          type: 'account',
         },
       });
     }
@@ -47,12 +41,10 @@ export default class LoginPage extends Component {
 
   render() {
     const { login, submitting } = this.props;
-    const { type } = this.state;
     return (
       <div className={styles.main}>
         <Login
-          defaultActiveKey={type}
-          onTabChange={this.onTabChange}
+          defaultActiveKey="account"
           onSubmit={this.handleSubmit}
         >
           <Tab key="account" tab="交通银行资产证券化交易平台登录">

@@ -1,3 +1,4 @@
+import { routerRedux } from 'dva/router';
 import { createAbsProject, queryAbsProjectList, removeAbsProject, queryAbsProjectDetail, modifyAbsProject } from '../services/abs';
 
 export default {
@@ -7,9 +8,10 @@ export default {
   },
 
   effects: {
-    *createAbsProject({ payload, callback }, { call }) {
+    *createAbsProject({ payload, callback }, { call, put }) {
       const response = yield call(createAbsProject, payload);
       callback(response.projectId);
+      yield put(routerRedux.push(`/project/success/${response.projectId}`));
     },
     *removeAbsProject({ payload }, { call, put }) {
       const { projectId } = payload;
