@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Form, Icon, Col, Row, Input, Popover, Divider, Table } from 'antd';
-import { routerRedux } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './style.less';
 
@@ -71,10 +70,6 @@ export default class DetailLinear extends Component {
             payload: {
               ...values,
               workflowId,
-            },
-            // 增加一个回调，便于在请求完成后执行一些页面的控制逻辑
-            callback: () => {
-              dispatch(routerRedux.push(`/workflow/linear/success/${workflowId}`));
             },
           });
         }

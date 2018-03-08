@@ -1,4 +1,5 @@
 import { startProcess, queryProcessDetail, queryProcessLogs, transferProcess, cancelProcess, queryTodoList, queryDoneList } from '../services/absProcess';
+import { queryAbsProjectList } from '../services/absProject';
 import { queryWorkflowDetail } from '../services/absWorkflow';
 
 export default {
@@ -74,6 +75,21 @@ export default {
         payload: response,
       });
     },
+    *queryAbsDocList({ payload }, { call, put }) {
+      const { docType } = payload;
+      let response = {};
+      switch (docType) {
+        case 'project':
+          response = yield call(queryAbsProjectList);
+          break;
+        default:
+          break;
+      }
+      yield put({
+        type: 'showDocDataList',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
@@ -105,6 +121,12 @@ export default {
       return {
         ...state,
         data: action.payload,
+      };
+    },
+    showDocDataList(state, action) {
+      return {
+        ...state,
+        docDatas: action.payload,
       };
     },
   },

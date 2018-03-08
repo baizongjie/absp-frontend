@@ -28,7 +28,7 @@ const menuData = [{
   path: 'process',
   children: [{
     name: '发起流程',
-    path: 'create',
+    path: 'start',
   }, {
     name: '待办任务',
     path: 'todo/list',

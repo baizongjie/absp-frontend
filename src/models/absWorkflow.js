@@ -1,3 +1,4 @@
+import { routerRedux } from 'dva/router';
 import { createLinearWorkflow, queryWorkflowDetail, queryWorkflowList, modifyWorkflow, enableOrDisableWorkflow } from '../services/absWorkflow';
 
 export default {
@@ -7,9 +8,9 @@ export default {
   },
 
   effects: {
-    *createLinearWorkflow({ payload, callback }, { call }) {
+    *createLinearWorkflow({ payload }, { call, put }) {
       const response = yield call(createLinearWorkflow, payload);
-      callback(response.workflowId);
+      yield put(routerRedux.push(`/workflow/linear/success/${response.workflowId}`));
     },
     *queryWorkflowDetail({ payload }, { call, put }) {
       const { workflowId } = payload;
@@ -26,9 +27,9 @@ export default {
         payload: response,
       });
     },
-    *modifyWorkflow({ payload, callback }, { call }) {
+    *modifyWorkflow({ payload }, { call, put }) {
       yield call(modifyWorkflow, payload);
-      callback();
+      yield put(routerRedux.push(`/workflow/linear/success/${payload.workflowId}`));
     },
     *enableOrDisableWorkflow({ payload }, { call, put }) {
       yield call(enableOrDisableWorkflow, payload);

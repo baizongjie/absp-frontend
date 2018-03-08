@@ -9,7 +9,7 @@ import styles from './style.less';
 const FormItem = Form.Item;
 
 const subDocTypeMap = {
-  linearWorkflow: '线性工作流',
+  linear: '线性工作流',
 };
 
 @connect(({ absWorkflow, loading }) => ({

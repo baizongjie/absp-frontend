@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Card, Button, Form, Icon, Col, Row, Input, Popover } from 'antd';
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import FooterToolbar from '../../components/FooterToolbar';
 import TableForm from './TableForm';
@@ -62,10 +61,6 @@ export default class CreateLinear extends PureComponent {
                 workflowName: values.workflowName,
               },
               nodeList: workflowNodes,
-            },
-            // 增加一个回调，便于在请求完成后执行一些页面的控制逻辑
-            callback: (workflowId) => {
-              dispatch(routerRedux.push(`/workflow/linear/success/${workflowId}`));
             },
           });
         }
