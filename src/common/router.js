@@ -110,7 +110,7 @@ export const getRouterData = (app) => {
     },
     // 线性工作流明成功创建
     '/workflow/linear/success/:pid': {
-      component: dynamicWrapper(app, [], () => import('../routes/Workflow/SuccessLinear')),
+      component: dynamicWrapper(app, [], () => import('../routes/Workflow/Success')),
     },
     // 流程待办列表
     '/process/todo/list': {
@@ -127,6 +127,10 @@ export const getRouterData = (app) => {
     // 待办流程详情
     '/process/todo/detail/:pid': {
       component: dynamicWrapper(app, ['absProcess'], () => import('../routes/Process/Detail')),
+    },
+    // 发起流程
+    '/process/start': {
+      component: dynamicWrapper(app, ['absProcess'], () => import('../routes/Process/Start')),
     },
     // 文件上传
     '/demo/fileUpload': {
