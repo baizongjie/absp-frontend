@@ -27,7 +27,7 @@ const nodeColumns = [{
 
 @connect(({ absWorkflow, loading }) => ({
   absWorkflow,
-  loading: loading.effects['absWorkflow/queryWorkflowDetail'],
+  loading: loading.models.absWorkflow,
 }))
 export default class DetailLinear extends Component {
   componentDidMount() {

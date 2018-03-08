@@ -1,6 +1,6 @@
 import { startProcess, queryProcessDetail, queryProcessLogs, transferProcess, cancelProcess, queryTodoList, queryDoneList } from '../services/absProcess';
 import { queryAbsProjectList } from '../services/absProject';
-import { queryWorkflowDetail } from '../services/absWorkflow';
+import { queryWorkflowList, queryWorkflowDetail } from '../services/absWorkflow';
 
 export default {
   namespace: 'absProcess',
@@ -90,6 +90,13 @@ export default {
         payload: response,
       });
     },
+    *queryWorkflowList(_, { call, put }) {
+      const response = yield call(queryWorkflowList);
+      yield put({
+        type: 'showWorkflowList',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
@@ -127,6 +134,12 @@ export default {
       return {
         ...state,
         docDatas: action.payload,
+      };
+    },
+    showWorkflowList(state, action) {
+      return {
+        ...state,
+        workflowList: action.payload,
       };
     },
   },

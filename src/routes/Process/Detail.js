@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
 import { connect } from 'dva';
-import { Card, Table, Divider, Button, Row, Col, Steps } from 'antd';
+import { Card, Table, Button, Row, Col, Steps } from 'antd';
 import { Link } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList';
@@ -45,7 +45,7 @@ const logColumns = [{
 
 @connect(({ absProcess, loading }) => ({
   absProcess,
-  loading: loading.effects['absProcess/queryProcessDetailWithLogsAndWorkflow'],
+  loading: loading.models.absProcess,
 }))
 export default class Detail extends Component {
   componentDidMount() {
@@ -215,13 +215,11 @@ export default class Detail extends Component {
           <Steps direction="horizontal">
             {progressSteps}
           </Steps>
-          <Divider style={{ marginBottom: 32 }} />
         </Card>
         <Card bordered={false} title="其他信息" style={{ marginBottom: 24 }}>
           <DescriptionList size="large" style={{ marginBottom: 32 }}>
             <Description term="待添加">待添加</Description>
           </DescriptionList>
-          <Divider style={{ marginBottom: 32 }} />
         </Card>
         <Card bordered={false} title="流程操作日志" style={{ marginBottom: 24 }}>
           <Table

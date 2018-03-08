@@ -78,7 +78,7 @@ export default class ListDone extends PureComponent {
             查看流程
           </Link>
           <Divider type="vertical" />
-          <Link to={`/process/detail/${record.id}`}>
+          <Link to={`/${record.attachDocType}/detail/${record.attachDocId}`}>
             查看文档
           </Link>
         </Fragment>

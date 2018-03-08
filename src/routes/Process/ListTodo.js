@@ -61,7 +61,7 @@ export default class ListTodo extends PureComponent {
             查看流程
           </Link>
           <Divider type="vertical" />
-          <Link to={`/process/todo/detail/${record.id}`}>
+          <Link to={`/${record.attachDocType}/detail/${record.attachDocId}`}>
             查看文档
           </Link>
         </Fragment>

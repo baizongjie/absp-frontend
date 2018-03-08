@@ -28,7 +28,7 @@ const nodeColumns = [{
 
 @connect(({ absWorkflow, loading }) => ({
   absWorkflow,
-  loading: loading.effects['absWorkflow/queryWorkflowDetail'],
+  loading: loading.models.absWorkflow,
   submitting: loading.effects['absWorkflow/modifyWorkflow'],
 }))
 
