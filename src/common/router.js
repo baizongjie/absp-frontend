@@ -128,6 +128,10 @@ export const getRouterData = (app) => {
     '/process/todo/detail/:pid': {
       component: dynamicWrapper(app, ['absProcess'], () => import('../routes/Process/Detail')),
     },
+    // 文件上传
+    '/demo/fileUpload': {
+      component: dynamicWrapper(app, ['absProcess'], () => import('../routes/Demo/FileUpload')),
+    },
     '/dashboard/analysis': {
       component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
     },

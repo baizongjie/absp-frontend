@@ -18,5 +18,11 @@
   },
   "publicPath": "/",
   "disableDynamicImport": false,
-  "hash": true
+  "hash": true,
+  "proxy": {
+    "/api/v1/upload": {
+      "target": "http://localhost:9010/",
+      "changeOrigin": true
+    }
+  }
 }

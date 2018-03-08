@@ -37,6 +37,14 @@ const menuData = [{
     path: 'done/list',
   }],
 }, {
+  name: '其他示例',
+  icon: 'appstore-o',
+  path: 'demo',
+  children: [{
+    name: '文件上传',
+    path: 'fileUpload',
+  }],
+}, {
   name: 'dashboard',
   icon: 'dashboard',
   path: 'dashboard',
