@@ -52,7 +52,6 @@ const logColumns = [{
 export default class Detail extends Component {
   state = {
     modalVisible: false,
-    confirmLoading: false,
   }
 
   componentDidMount() {
@@ -231,9 +230,6 @@ export default class Detail extends Component {
   }
 
   handleOk = () => {
-    this.setState({
-      confirmLoading: true,
-    });
     const { dispatch, match: { params: { pid } }, form } = this.props;
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
@@ -246,17 +242,13 @@ export default class Detail extends Component {
             nextOwner: nextNodeAndOrg[1],
           },
         });
-      } else {
-        this.setState({
-          confirmLoading: true,
-        });
       }
     });
   }
 
   render() {
-    const { modalVisible, confirmLoading } = this.state;
-    const { absProcess, form, location } = this.props;
+    const { modalVisible } = this.state;
+    const { absProcess, form, location, submitting } = this.props;
     const { getFieldDecorator } = form;
     const { pathname } = location;
     const isTodo = pathname.indexOf('/process/todo/detail/') === 0;
@@ -298,16 +290,12 @@ export default class Detail extends Component {
         title="提交"
         visible={modalVisible}
         onOk={this.handleOk}
-        confirmLoading={confirmLoading}
+        confirmLoading={submitting}
         onCancel={this.handleCancel}
         maskClosable={false}
       >
         <Form
           label="选择下一环节与下一人"
-          onSubmit={(e) => {
-            e.preventDefault();
-            this.handleOk();
-          }}
           hideRequiredMark
           style={{ marginTop: 8 }}
         >
