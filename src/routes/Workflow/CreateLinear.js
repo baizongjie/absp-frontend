@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Card, Button, Form, Icon, Col, Row, Input, Popover } from 'antd';
+import { Card, Button, Form, Col, Row, Input } from 'antd';
 import { connect } from 'dva';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import FooterToolbar from '../../components/FooterToolbar';
@@ -19,7 +19,7 @@ const tableData = [{
 
 @connect(({ global, loading }) => ({
   collapsed: global.collapsed,
-  submitting: loading.effects['workflow/createLinearWorkflow'],
+  submitting: loading.effects['absWorkflow/createLinearWorkflow'],
 }))
 
 @Form.create()
@@ -41,70 +41,35 @@ export default class CreateLinear extends PureComponent {
       this.setState({ width });
     }
   }
-  render() {
-    const { form, dispatch, submitting } = this.props;
-    const { getFieldDecorator, validateFieldsAndScroll, getFieldsError } = form;
-    const validate = () => {
-      validateFieldsAndScroll((error, values) => {
-        if (!error) {
-          const workflowNodes = [];
-          values.nodes.forEach((element) => {
-            const node = { nodeName: element.nodeName };
-            node.accessRoles = element.accessRoles.split(',');
-            node.accessOrgs = element.accessOrgs.split(',');
-            workflowNodes.push(node);
-          });
-          dispatch({
-            type: 'absWorkflow/createLinearWorkflow',
-            payload: {
-              workflowDef: {
-                workflowName: values.workflowName,
-              },
-              nodeList: workflowNodes,
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    this.props.form.validateFieldsAndScroll((error, values) => {
+      if (!error) {
+        const workflowNodes = [];
+        values.nodes.forEach((element) => {
+          const node = { nodeName: element.nodeName };
+          node.accessRoles = element.accessRoles.split(',');
+          node.accessOrgs = element.accessOrgs.split(',');
+          workflowNodes.push(node);
+        });
+        this.props.dispatch({
+          type: 'absWorkflow/createLinearWorkflow',
+          payload: {
+            workflowDef: {
+              workflowName: values.workflowName,
             },
-          });
-        }
-      });
-    };
-    const errors = getFieldsError();
-    const getErrorInfo = () => {
-      const errorCount = Object.keys(errors).filter(key => errors[key]).length;
-      if (!errors || errorCount === 0) {
-        return null;
+            nodeList: workflowNodes,
+          },
+        });
       }
-      const scrollToField = (fieldKey) => {
-        const labelNode = document.querySelector(`label[for="${fieldKey}"]`);
-        if (labelNode) {
-          labelNode.scrollIntoView(true);
-        }
-      };
-      const errorList = Object.keys(errors).map((key) => {
-        if (!errors[key]) {
-          return null;
-        }
-        return (
-          <li key={key} className={styles.errorListItem} onClick={() => scrollToField(key)}>
-            <Icon type="cross-circle-o" className={styles.errorIcon} />
-            <div className={styles.errorMessage}>{errors[key][0]}</div>
-            <div className={styles.errorField}>{fieldLabels[key]}</div>
-          </li>
-        );
-      });
-      return (
-        <span className={styles.errorIcon}>
-          <Popover
-            title="表单校验信息"
-            content={errorList}
-            overlayClassName={styles.errorPopover}
-            trigger="click"
-            getPopupContainer={trigger => trigger.parentNode}
-          >
-            <Icon type="exclamation-circle" />
-          </Popover>
-          {errorCount}
-        </span>
-      );
-    };
+    });
+  }
+
+  render() {
+    const { form, submitting } = this.props;
+    const { getFieldDecorator } = form;
     return (
       <PageHeaderLayout
         title="创建线性工作流"
@@ -132,8 +97,12 @@ export default class CreateLinear extends PureComponent {
           })(<TableForm />)}
         </Card>
         <FooterToolbar style={{ width: this.state.width }}>
-          {getErrorInfo()}
-          <Button type="primary" onClick={validate} loading={submitting}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            onClick={this.handleSubmit}
+            loading={submitting}
+          >
             提交
           </Button>
         </FooterToolbar>

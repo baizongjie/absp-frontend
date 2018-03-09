@@ -4,6 +4,7 @@ import { Link } from 'dva/router';
 import {
   Form, Input, Select, Button, Card, Table,
 } from 'antd';
+import FooterToolbar from '../../components/FooterToolbar';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 const FormItem = Form.Item;
@@ -21,30 +22,29 @@ const docTypes = (
 @Form.create()
 export default class Start extends PureComponent {
   state = {
+    width: '100%',
     selectedDocType: 'project',
     selectedDoc: {},
-    docColumns: [{
-      title: '345',
-      key: 'projectName',
-      render: record => (
-        <Fragment>
-          <Link to={`/project/detail/${record.id}`} target="_blank">
-            {record.projectName}
-          </Link>
-        </Fragment>
-      ),
-    },
-    {
-      title: '123',
-      dataIndex: 'initiator',
-      key: 'initiator',
-    }],
+    docColumns: [],
   }
 
   componentDidMount() {
+    window.addEventListener('resize', this.resizeFooterToolbar);
     this.handleDocTypeChange('project');
     this.queryAccessableWorkflows();
     this.queryDocList();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.resizeFooterToolbar);
+  }
+
+  resizeFooterToolbar = () => {
+    const sider = document.querySelectorAll('.ant-layout-sider')[0];
+    const width = `calc(100% - ${sider.style.width})`;
+    if (this.state.width !== width) {
+      this.setState({ width });
+    }
   }
 
   actionColumn = {
@@ -180,13 +180,6 @@ export default class Start extends PureComponent {
       },
     };
 
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 10 },
-      },
-    };
-
     return (
       <PageHeaderLayout title="发起新流程" content="请选择需要流转的文档和流程类型。">
         <Card bordered={false}>
@@ -195,6 +188,21 @@ export default class Start extends PureComponent {
             hideRequiredMark
             style={{ marginTop: 8 }}
           >
+            <FormItem
+              {...formItemLayout}
+              label="选择工作流"
+            >
+              {getFieldDecorator('workflowId', {
+                initialValue: defaultWorkflowId,
+                rules: [
+                  { required: true, message: '请选择一个流程工作流' },
+                ],
+              })(
+                <Select>
+                  {workflowOpts}
+                </Select>
+              )}
+            </FormItem>
             <FormItem
               {...formItemLayout}
               label="选择文档"
@@ -229,33 +237,19 @@ export default class Start extends PureComponent {
                 dataSource={this.props.absProcess.docDatas}
               />
             </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="选择工作流"
-            >
-              {getFieldDecorator('workflowId', {
-                initialValue: defaultWorkflowId,
-                rules: [
-                  { required: true, message: '请选择一个流程工作流' },
-                ],
-              })(
-                <Select>
-                  {workflowOpts}
-                </Select>
-              )}
-            </FormItem>
-            <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                loading={submitting}
-                onClick={this.handleSubmit}
-              >
-                提交
-              </Button>
-            </FormItem>
+
           </Form>
         </Card>
+        <FooterToolbar style={{ width: this.state.width }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            onClick={this.handleSubmit}
+            loading={submitting}
+          >
+            提交
+          </Button>
+        </FooterToolbar>
       </PageHeaderLayout>
     );
   }
