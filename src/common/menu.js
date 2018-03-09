@@ -13,7 +13,7 @@ const menuData = [{
   }],
 }, {
   name: '工作流维护',
-  icon: 'appstore-o',
+  icon: 'code-o',
   path: 'workflow',
   children: [{
     name: '新增线性工作流',
@@ -24,7 +24,7 @@ const menuData = [{
   }],
 }, {
   name: '流程实例',
-  icon: 'appstore-o',
+  icon: 'profile',
   path: 'process',
   children: [{
     name: '发起流程',
