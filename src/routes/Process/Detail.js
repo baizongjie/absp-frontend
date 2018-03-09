@@ -280,7 +280,6 @@ export default class Detail extends Component {
 
     const description = (
       <DescriptionList className={styles.headerList} size="small" col="2">
-        <Description term="文档名称">{detail.attachDocName}</Description>
         <Description term="文档名称">
           <Link to={`/${detail.attachDocType}/detail/${detail.attachDocId}`} target="_blank">
             {detail.attachDocName}
