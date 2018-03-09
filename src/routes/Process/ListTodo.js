@@ -67,16 +67,6 @@ export default class ListTodo extends PureComponent {
         </Fragment>
       ),
     },
-    {
-      title: '操作',
-      render: (text, record) => (
-        <Fragment>
-          <Link to={`/workflow/${record.subDocType}/modify/${record.id}`}>
-            提交
-          </Link>
-        </Fragment>
-      ),
-    },
   ];
 
   handleFormReset = () => {

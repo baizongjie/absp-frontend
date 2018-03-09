@@ -1,5 +1,5 @@
 import { routerRedux } from 'dva/router';
-import { createLinearWorkflow, queryWorkflowDetail, queryWorkflowList, modifyWorkflow, enableOrDisableWorkflow } from '../services/absWorkflow';
+import { createLinearWorkflow, queryWorkflowDetail, queryWorkflowList, queryAccessableWorkflows, modifyWorkflow, enableOrDisableWorkflow } from '../services/absWorkflow';
 
 export default {
   namespace: 'absWorkflow',
@@ -22,6 +22,13 @@ export default {
     },
     *queryWorkflowList(_, { call, put }) {
       const response = yield call(queryWorkflowList);
+      yield put({
+        type: 'showWorkflowList',
+        payload: response,
+      });
+    },
+    *queryAccessableWorkflows(_, { call, put }) {
+      const response = yield call(queryAccessableWorkflows);
       yield put({
         type: 'showWorkflowList',
         payload: response,

@@ -1,6 +1,7 @@
+import { routerRedux } from 'dva/router';
 import { startProcess, queryProcessDetail, queryProcessLogs, transferProcess, cancelProcess, queryTodoList, queryDoneList } from '../services/absProcess';
 import { queryAbsProjectList } from '../services/absProject';
-import { queryWorkflowList, queryWorkflowDetail } from '../services/absWorkflow';
+import { queryAccessableWorkflows, queryWorkflowDetail } from '../services/absWorkflow';
 
 export default {
   namespace: 'absProcess',
@@ -9,15 +10,15 @@ export default {
   },
 
   effects: {
-    *startProcess({ payload, callback }, { call }) {
+    *startProcess({ payload }, { call, put }) {
       const response = yield call(startProcess, payload);
-      callback(response.processId);
+      yield put(routerRedux.push(`/process/todo/detail/${response.processId}`));
     },
     *cancelProcess({ payload }, { call, put }) {
       yield call(cancelProcess, payload);
-      const response = yield call(queryTodoList);
+      const response = yield call(queryDoneList);
       yield put({
-        type: 'showTodoList',
+        type: 'showDoneList',
         payload: response,
       });
     },
@@ -69,11 +70,7 @@ export default {
     },
     *transferProcess({ payload }, { call, put }) {
       yield call(transferProcess, payload);
-      const response = yield call(queryTodoList);
-      yield put({
-        type: 'showTodoList',
-        payload: response,
-      });
+      yield put(routerRedux.push(`/process/success/${payload.processId}`));
     },
     *queryAbsDocList({ payload }, { call, put }) {
       const { docType } = payload;
@@ -90,8 +87,8 @@ export default {
         payload: response,
       });
     },
-    *queryWorkflowList(_, { call, put }) {
-      const response = yield call(queryWorkflowList);
+    *queryAccessableWorkflows(_, { call, put }) {
+      const response = yield call(queryAccessableWorkflows);
       yield put({
         type: 'showWorkflowList',
         payload: response,

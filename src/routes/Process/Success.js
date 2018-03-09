@@ -5,14 +5,17 @@ import Result from '../../components/Result';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 
-function actions(pid, workflowType) {
+function actions(pid) {
   return (
     <div>
-      <Link to="/workflow/list" style={{ padding: '10px' }}>
-        <Button type="primary">返回列表</Button>
+      <Link to={`/process/detail/${pid}`} style={{ padding: '10px' }}>
+        <Button type="primary">查看详情</Button>
       </Link>
-      <Link to={`/workflow/${workflowType}/detail/${pid}`} style={{ padding: '10px' }}>
-        <Button>查看流程</Button>
+      <Link to="/process/todo/list">
+        <Button>查看待办</Button>
+      </Link>
+      <Link to="/process/done/list">
+        <Button>查看已办</Button>
       </Link>
     </div>
   );
@@ -20,19 +23,14 @@ function actions(pid, workflowType) {
 
 export default class Success extends PureComponent {
   render() {
-    const workflowType = 'linear';
     const { match: { params: { pid } } } = this.props;
-    // const { pathname } = location;
-    // if (pathname.indexOf('/workflow/linear/success/') === 0){
-    //  workflowType = 'linear';
-    // }
     return (
       <PageHeaderLayout>
         <Card bordered={false}>
           <Result
             type="success"
             title="提交成功"
-            actions={actions(pid, workflowType)}
+            actions={actions(pid)}
             style={{ marginTop: 48, marginBottom: 16 }}
           />
         </Card>

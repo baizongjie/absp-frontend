@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
 import { connect } from 'dva';
-import { Card, Table, Button, Row, Col, Steps } from 'antd';
+import { Card, Table, Button, Row, Col, Steps, Cascader, Form, Modal } from 'antd';
 import { Link } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList';
@@ -46,8 +46,15 @@ const logColumns = [{
 @connect(({ absProcess, loading }) => ({
   absProcess,
   loading: loading.models.absProcess,
+  submitting: loading.effects['absProcess/transferProcess'],
 }))
+@Form.create()
 export default class Detail extends Component {
+  state = {
+    modalVisible: false,
+    confirmLoading: false,
+  }
+
   componentDidMount() {
     // 获取url中的pid参数
     const { dispatch, match: { params: { pid } } } = this.props;
@@ -99,19 +106,16 @@ export default class Detail extends Component {
   }
 
   getSteps = (detail, logs, nodes) => {
-    if (logs === null || nodes === null
+    if (detail == null || logs === null || nodes === null
       || logs.length === 0 || nodes.lenght === 0) {
       return null;
     }
     // 渲染进度图
     // 保持进度图内少于等于5个节点
-    const progressSteps = [];
     // 先根据操作日志渲染Steps
-    logs.forEach((element) => {
-      progressSteps.push(
-        <Step key={element.fromNodeId} title={element.fromNodeName} description={element.fromOrg} status="finish" />
-      );
-    });
+    const progressSteps = logs.map(element =>
+      <Step key={element.fromNodeId} title={element.fromNodeName} description={element.fromOrg} status="finish" />
+    );
     let currentStep = progressSteps.length - 1;
     // 添加当前节点Step
     if (!detail.canceled) {
@@ -162,13 +166,105 @@ export default class Detail extends Component {
     return progressSteps.slice(progressSteps.length - showSteps);
   }
 
+  getNextOpts = (detail, nodes) => {
+    if (detail == null || nodes.length === 0 || nodes.lenght === 0) {
+      return [];
+    }
+    // 先将所有节点映射一个map
+    const nodeMap = {};
+    nodes.forEach((element) => {
+      nodeMap[element.id] = element;
+    });
+    // 找到当前节点
+    const currentNode = nodeMap[detail.currentNodeId];
+    if (currentNode == null) {
+      return [];
+    }
+    // 组装options
+    const options = [];
+    if (currentNode.lastNode) {
+      // 最后一个节点
+      options.push({
+        value: '',
+        label: '结束',
+        children: [{
+          value: '',
+          label: '结束',
+        }],
+      });
+    } else {
+      // 其他节点
+      currentNode.nextNodeIds.forEach((element) => {
+        const nextNode = nodeMap[element];
+        // 目前只处理 accessOrgs
+        const children = [];
+        nextNode.accessOrgs.forEach((org) => {
+          children.push(
+            {
+              value: org,
+              label: org,
+            }
+          );
+        });
+        options.push(
+          {
+            value: nextNode.id,
+            label: nextNode.nodeName,
+            children,
+          }
+        );
+      });
+    }
+    return options;
+  }
+
+  showModal = () => {
+    this.setState({
+      modalVisible: true,
+    });
+  }
+
+  handleCancel = () => {
+    this.setState({
+      modalVisible: false,
+    });
+  }
+
+  handleOk = () => {
+    this.setState({
+      confirmLoading: true,
+    });
+    const { dispatch, match: { params: { pid } }, form } = this.props;
+    form.validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        const { nextNodeAndOrg } = values;
+        dispatch({
+          type: 'absProcess/transferProcess',
+          payload: {
+            processId: pid,
+            nextNodeId: nextNodeAndOrg[0],
+            nextOwner: nextNodeAndOrg[1],
+          },
+        });
+      } else {
+        this.setState({
+          confirmLoading: true,
+        });
+      }
+    });
+  }
+
   render() {
-    const { pathname } = this.props.location;
+    const { modalVisible, confirmLoading } = this.state;
+    const { absProcess, form, location } = this.props;
+    const { getFieldDecorator } = form;
+    const { pathname } = location;
     const isTodo = pathname.indexOf('/process/todo/detail/') === 0;
-    const { detail = {}, logs = [], workflowNodes = [], loading } = this.props.absProcess;
+    const { detail = {}, logs = [], workflowNodes = [], loading } = absProcess;
     const pageTitle = this.getPageTitle(detail);
     const status = this.getStatusStr(detail);
     const progressSteps = this.getSteps(detail, logs, workflowNodes);
+    const options = isTodo ? this.getNextOpts(detail, workflowNodes) : [];
     const extra = (
       <Row>
         <Col xs={24} sm={12}>
@@ -198,9 +294,53 @@ export default class Detail extends Component {
       </DescriptionList>
     );
 
+    const actionContent = (
+      <Modal
+        title="提交"
+        visible={modalVisible}
+        onOk={this.handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={this.handleCancel}
+        maskClosable={false}
+      >
+        <Form
+          label="选择下一环节与下一人"
+          onSubmit={(e) => {
+            e.preventDefault();
+            this.handleOk();
+          }}
+          hideRequiredMark
+          style={{ marginTop: 8 }}
+        >
+          <Form.Item>
+            {getFieldDecorator('nextNodeAndOrg', {
+              rules: [
+                { required: true, message: '请选择下一个提交对象' },
+              ],
+            })(
+              <Cascader
+                size="large"
+                expandTrigger="hover"
+                placeholder="请选择下一个提交对象"
+                options={options}
+              />
+            )}
+          </Form.Item>
+        </Form>
+      </Modal>
+    );
+
     const action = (
       <div>
-        <Button type="primary" disabled={!isTodo}>提交</Button>
+        {actionContent}
+        <Button
+          size="large"
+          type="primary"
+          disabled={!isTodo}
+          onClick={this.showModal}
+        >
+          提交
+        </Button>
       </div>
     );
 
@@ -215,11 +355,6 @@ export default class Detail extends Component {
           <Steps direction="horizontal">
             {progressSteps}
           </Steps>
-        </Card>
-        <Card bordered={false} title="其他信息" style={{ marginBottom: 24 }}>
-          <DescriptionList size="large" style={{ marginBottom: 32 }}>
-            <Description term="待添加">待添加</Description>
-          </DescriptionList>
         </Card>
         <Card bordered={false} title="流程操作日志" style={{ marginBottom: 24 }}>
           <Table

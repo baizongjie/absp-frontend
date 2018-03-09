@@ -132,6 +132,10 @@ export const getRouterData = (app) => {
     '/process/start': {
       component: dynamicWrapper(app, ['absProcess'], () => import('../routes/Process/Start')),
     },
+    // 流程操作成功
+    '/process/success/:pid': {
+      component: dynamicWrapper(app, [], () => import('../routes/Process/Success')),
+    },
     // 文件上传
     '/demo/fileUpload': {
       component: dynamicWrapper(app, ['absProcess'], () => import('../routes/Demo/FileUpload')),

@@ -28,6 +28,13 @@ export async function queryWorkflowList() {
 }
 
 /**
+ * 查询可发起的工作流清单
+ */
+export async function queryAccessableWorkflows() {
+  return request('/api/v1/queryAccessableWorkflows');
+}
+
+/**
  * 修改工作流定义
  */
 export async function modifyWorkflow(params) {

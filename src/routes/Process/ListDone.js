@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
-import { Row, Col, Card, Form, Input, Button, Table, Divider, Badge } from 'antd';
+import { Row, Col, Card, Form, Input, Button, Table, Divider, Badge, Popconfirm } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 import styles from './style.less';
@@ -67,8 +67,8 @@ export default class ListDone extends PureComponent {
       dataIndex: 'createTime',
     },
     {
-      title: '到达时间',
-      dataIndex: 'modifyTime',
+      title: '发起机构',
+      dataIndex: 'creator',
     },
     {
       title: '详情',
@@ -84,7 +84,25 @@ export default class ListDone extends PureComponent {
         </Fragment>
       ),
     },
+    {
+      title: '操作',
+      render: (text, record) => (
+        <Fragment>
+          <Popconfirm title="确定要取消这个流程吗？" onConfirm={() => this.cancelProcess(record)}>
+            <a href="#">取消</a>
+          </Popconfirm>
+        </Fragment>
+      ),
+    },
   ];
+
+  cancelProcess = (record) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'absProcess/cancelProcess',
+      payload: { processId: record.id },
+    });
+  }
 
   handleFormReset = () => {
     const { form } = this.props;
