@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { Card, Button, Form, Col, Row, Input } from 'antd';
 import { connect } from 'dva';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
-import FooterToolbar from '../../components/FooterToolbar';
 import TableForm from './TableForm';
 import styles from './style.less';
 
@@ -50,8 +49,12 @@ export default class CreateLinear extends PureComponent {
         const workflowNodes = [];
         values.nodes.forEach((element) => {
           const node = { nodeName: element.nodeName };
-          node.accessRoles = element.accessRoles.split(',');
-          node.accessOrgs = element.accessOrgs.split(',');
+          if (element.accessRoles.trim() !== '') {
+            node.accessRoles = element.accessRoles.split(',').map(item => item.trim());
+          }
+          if (element.accessOrgs.trim() !== '') {
+            node.accessOrgs = element.accessOrgs.split(',').map(item => item.trim());
+          }
           workflowNodes.push(node);
         });
         this.props.dispatch({
@@ -70,10 +73,25 @@ export default class CreateLinear extends PureComponent {
   render() {
     const { form, submitting } = this.props;
     const { getFieldDecorator } = form;
+
+    const action = (
+      <div>
+        <Button
+          size="large"
+          type="primary"
+          onClick={this.handleSubmit}
+          loading={submitting}
+        >
+          提交
+        </Button>
+      </div>
+    );
+
     return (
       <PageHeaderLayout
         title="创建线性工作流"
         wrapperClassName={styles.advancedForm}
+        action={action}
       >
         <Card title="工作流信息" className={styles.card} bordered={false}>
           <Form layout="vertical" hideRequiredMark>
@@ -96,16 +114,6 @@ export default class CreateLinear extends PureComponent {
             rules: [{ required: true, message: '请添加节点' }],
           })(<TableForm />)}
         </Card>
-        <FooterToolbar style={{ width: this.state.width }}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            onClick={this.handleSubmit}
-            loading={submitting}
-          >
-            提交
-          </Button>
-        </FooterToolbar>
       </PageHeaderLayout>
     );
   }

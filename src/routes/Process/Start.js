@@ -4,7 +4,6 @@ import { Link } from 'dva/router';
 import {
   Form, Input, Select, Button, Card, Table,
 } from 'antd';
-import FooterToolbar from '../../components/FooterToolbar';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 const FormItem = Form.Item;
@@ -168,6 +167,19 @@ export default class Start extends PureComponent {
     const workflowOpts = this.handleWorkflowOpts(workflowList);
     const defaultWorkflowId = this.handleDefaultWorkflowId(workflowList);
 
+    const action = (
+      <div>
+        <Button
+          size="large"
+          type="primary"
+          onClick={this.handleSubmit}
+          loading={submitting}
+        >
+          提交
+        </Button>
+      </div>
+    );
+
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -181,7 +193,11 @@ export default class Start extends PureComponent {
     };
 
     return (
-      <PageHeaderLayout title="发起新流程" content="请选择需要流转的文档和流程类型。">
+      <PageHeaderLayout
+        title="发起新流程"
+        content="请选择需要流转的文档和流程类型。"
+        action={action}
+      >
         <Card bordered={false}>
           <Form
             onSubmit={this.handleSubmit}
@@ -240,16 +256,6 @@ export default class Start extends PureComponent {
 
           </Form>
         </Card>
-        <FooterToolbar style={{ width: this.state.width }}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            onClick={this.handleSubmit}
-            loading={submitting}
-          >
-            提交
-          </Button>
-        </FooterToolbar>
       </PageHeaderLayout>
     );
   }
