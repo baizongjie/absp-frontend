@@ -82,7 +82,7 @@ export default class Detail extends Component {
     }
   }
 
-  getPageTitle = (detail) => {
+  handlePageTitle = (detail) => {
     if (detail == null) {
       return '';
     }
@@ -90,7 +90,7 @@ export default class Detail extends Component {
     return title;
   }
 
-  getStatusStr = (detail) => {
+  handleStatusStr = (detail) => {
     if (detail == null) {
       return 0;
     }
@@ -105,7 +105,7 @@ export default class Detail extends Component {
     return status;
   }
 
-  getSteps = (detail, logs, nodes) => {
+  handleSteps = (detail, logs, nodes) => {
     if (detail == null || logs === null || nodes === null
       || logs.length === 0 || nodes.lenght === 0) {
       return null;
@@ -166,7 +166,7 @@ export default class Detail extends Component {
     return progressSteps.slice(progressSteps.length - showSteps);
   }
 
-  getNextOpts = (detail, nodes) => {
+  handleNextOpts = (detail, nodes) => {
     if (detail == null || nodes.length === 0 || nodes.lenght === 0) {
       return [];
     }
@@ -261,10 +261,10 @@ export default class Detail extends Component {
     const { pathname } = location;
     const isTodo = pathname.indexOf('/process/todo/detail/') === 0;
     const { detail = {}, logs = [], workflowNodes = [], loading } = absProcess;
-    const pageTitle = this.getPageTitle(detail);
-    const status = this.getStatusStr(detail);
-    const progressSteps = this.getSteps(detail, logs, workflowNodes);
-    const options = isTodo ? this.getNextOpts(detail, workflowNodes) : [];
+    const pageTitle = this.handlePageTitle(detail);
+    const status = this.handleStatusStr(detail);
+    const progressSteps = this.handleSteps(detail, logs, workflowNodes);
+    const options = isTodo ? this.handleNextOpts(detail, workflowNodes) : [];
     const extra = (
       <Row>
         <Col xs={24} sm={12}>

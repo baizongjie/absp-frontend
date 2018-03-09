@@ -10,7 +10,7 @@ const FormItem = Form.Item;
 const { Option } = Select;
 
 const docTypes = (
-  <Option value="project">项目</Option>
+  <Option key="project" value="project">项目</Option>
 );
 
 @connect(({ absProcess, loading }) => ({
@@ -23,15 +23,39 @@ export default class Start extends PureComponent {
   state = {
     selectedDocType: 'project',
     selectedDoc: {},
-    docColumns: this.projectCols,
+    docColumns: [{
+      title: '345',
+      key: 'projectName',
+      render: record => (
+        <Fragment>
+          <Link to={`/project/detail/${record.id}`} target="_blank">
+            {record.projectName}
+          </Link>
+        </Fragment>
+      ),
+    },
+    {
+      title: '123',
+      dataIndex: 'initiator',
+      key: 'initiator',
+    }],
   }
 
   componentDidMount() {
+    this.handleDocTypeChange('project');
     this.queryAccessableWorkflows();
-    this.queryProjects();
+    this.queryDocList();
   }
 
-  getWorkflowOpts = (workflowList) => {
+  actionColumn = {
+    title: '操作',
+    key: 'action',
+    render: record => (
+      <Button onClick={() => this.selectDoc(record)}>选择</Button>
+    ),
+  }
+
+  handleWorkflowOpts = (workflowList) => {
     if (workflowList == null) {
       return [];
     }
@@ -41,7 +65,7 @@ export default class Start extends PureComponent {
     return workflowOpts;
   }
 
-  getDefaultWorkflowId = (workflowList) => {
+  handleDefaultWorkflowId = (workflowList) => {
     if (workflowList === null || workflowList.length === 0) {
       return null;
     }
@@ -63,7 +87,35 @@ export default class Start extends PureComponent {
     let columns = [];
     switch (value) {
       case 'project':
-        columns = this.projectColumns;
+        columns = [
+          {
+            title: '文档名称',
+            key: 'projectName',
+            render: record => (
+              <Fragment>
+                <Link to={`/project/detail/${record.id}`} target="_blank">
+                  {record.projectName}
+                </Link>
+              </Fragment>
+            ),
+          },
+          {
+            title: '发行机构',
+            dataIndex: 'initiator',
+            key: 'initiator',
+          },
+          {
+            title: '发行规模',
+            dataIndex: 'scale',
+            key: 'scale',
+          },
+          {
+            title: '基础资产',
+            dataIndex: 'basicAssets',
+            key: 'basicAssets',
+          },
+          this.actionColumn,
+        ];
         break;
       default:
         break;
@@ -97,51 +149,13 @@ export default class Start extends PureComponent {
     });
   }
 
-  queryProjects = () => {
+  queryDocList = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'absProcess/queryAbsDocList',
       payload: { docType: this.state.selectedDocType },
     });
   }
-
-  actionCol = {
-    title: '操作',
-    key: 'action',
-    render: record => (
-      <Button onClick={() => this.selectDoc(record)}>选择</Button>
-    ),
-  };
-
-  projectCols = [
-    {
-      title: '文档名称',
-      key: 'projectName',
-      render: record => (
-        <Fragment>
-          <Link to={`/project/detail/${record.id}`} target="_blank">
-            {record.projectName}
-          </Link>
-        </Fragment>
-      ),
-    },
-    {
-      title: '发行机构',
-      dataIndex: 'initiator',
-      key: 'initiator',
-    },
-    {
-      title: '发行规模',
-      dataIndex: 'scale',
-      key: 'scale',
-    },
-    {
-      title: '基础资产',
-      dataIndex: 'basicAssets',
-      key: 'basicAssets',
-    },
-    this.actionCol,
-  ];
 
   recordNameMap = {
     project: 'projectName',
@@ -151,8 +165,8 @@ export default class Start extends PureComponent {
     const { submitting, absProcess, loading } = this.props;
     const { getFieldDecorator } = this.props.form;
     const { workflowList = [] } = absProcess;
-    const workflowOpts = this.getWorkflowOpts(workflowList);
-    const defaultWorkflowId = this.getDefaultWorkflowId(workflowList);
+    const workflowOpts = this.handleWorkflowOpts(workflowList);
+    const defaultWorkflowId = this.handleDefaultWorkflowId(workflowList);
 
     const formItemLayout = {
       labelCol: {

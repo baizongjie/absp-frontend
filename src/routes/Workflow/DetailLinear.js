@@ -1,29 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Divider } from 'antd';
+import { Card, Steps, Divider, Tag } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList';
 import styles from './style.less';
 
+const { Step } = Steps;
 const { Description } = DescriptionList;
-
-const nodeColumns = [{
-  title: '节点ID',
-  dataIndex: 'id',
-  key: 'id',
-}, {
-  title: '节点名称',
-  dataIndex: 'nodeName',
-  key: 'nodeName',
-}, {
-  title: '准入角色',
-  dataIndex: 'accessRolesStr',
-  key: 'accessRolesStr',
-}, {
-  title: '准入机构',
-  dataIndex: 'accessOrgsStr',
-  key: 'accessOrgsStr',
-}];
 
 @connect(({ absWorkflow, loading }) => ({
   absWorkflow,
@@ -48,22 +31,58 @@ export default class DetailLinear extends Component {
     return workflowDef.enabled ? '可用' : '禁用';
   }
 
-  getNodeList = (workflowNodes) => {
-    const nodeList = [];
+  getNodeStep = (workflowNode) => {
+    const { accessRoles, accessOrgs } = workflowNode;
+    let roleTags = [];
+    if (accessRoles != null) {
+      roleTags = accessRoles.map(role =>
+        <Tag key={role} color="green">{role}</Tag>
+      );
+    } else {
+      roleTags.push(<Tag key="no-role">无</Tag>);
+    }
+    let orgTags = [];
+    if (orgTags != null) {
+      orgTags = accessOrgs.map(org =>
+        <Tag key={org} color="blue">{org}</Tag>
+      );
+    } else {
+      orgTags.push(<Tag key="no-org">无</Tag>);
+    }
+    const description = (
+      <div>
+        <div>
+          <span style={{ padding: '10px' }}>准入角色</span>
+          {roleTags}
+        </div>
+        <div>
+          <span style={{ padding: '10px' }}>准入机构</span>
+          {orgTags}
+        </div>
+      </div>
+    );
+    return (
+      <Step
+        key={workflowNode.id}
+        title={workflowNode.nodeName}
+        description={description}
+      />
+    );
+  }
+
+  getNodeSteps = (workflowNodes) => {
+    const nodeSteps = [];
     workflowNodes.forEach((element) => {
-      const node = element;
-      node.accessRolesStr = node.accessRoles.join(',');
-      node.accessOrgsStr = node.accessOrgs.join(',');
-      nodeList.push(node);
+      nodeSteps.push(this.getNodeStep(element));
     });
-    return nodeList;
+    return nodeSteps;
   }
 
   render() {
-    const { absWorkflow, loading } = this.props;
+    const { absWorkflow } = this.props;
     const { workflowDef = {}, workflowNodes = [] } = absWorkflow;
     const enabledStr = this.getEnableStr(workflowDef);
-    const nodeList = this.getNodeList(workflowNodes);
+    const nodeSteps = this.getNodeSteps(workflowNodes);
     return (
       <PageHeaderLayout title="线性工作流详情">
         <Card bordered={false}>
@@ -78,14 +97,11 @@ export default class DetailLinear extends Component {
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>节点清单</div>
-          <Table
-            style={{ marginBottom: 16 }}
-            pagination={false}
-            rowKey={record => record.id}
-            loading={loading}
-            dataSource={nodeList}
-            columns={nodeColumns}
-          />
+          <Steps direction="vertical" current={-1}>
+            <Step title="开始" />
+            {nodeSteps}
+            <Step title="结束" />
+          </Steps>
         </Card>
       </PageHeaderLayout>
     );

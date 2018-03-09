@@ -4,17 +4,16 @@ import { Link } from 'dva/router';
 import Result from '../../components/Result';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
-
 function actions(pid) {
   return (
     <div>
-      <Link to={`/process/detail/${pid}`} style={{ padding: '10px' }}>
+      <Link to={`/process/detail/${pid}`} style={{ padding: '5px' }}>
         <Button type="primary">查看详情</Button>
       </Link>
-      <Link to="/process/todo/list">
+      <Link to="/process/todo/list" style={{ padding: '5px' }}>
         <Button>查看待办</Button>
       </Link>
-      <Link to="/process/done/list">
+      <Link to="/process/done/list" style={{ padding: '5px' }}>
         <Button>查看已办</Button>
       </Link>
     </div>
