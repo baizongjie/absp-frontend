@@ -1,30 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Button, Form, Icon, Col, Row, Input, Popover, Divider, Table } from 'antd';
+import { Card, Button, Form, Col, Row, Input, Divider, Steps, Tag } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './style.less';
+
+const { Step } = Steps;
 
 const fieldLabels = {
   workflowName: '工作流名称',
 };
-
-const nodeColumns = [{
-  title: '节点ID',
-  dataIndex: 'id',
-  key: 'id',
-}, {
-  title: '节点名称',
-  dataIndex: 'nodeName',
-  key: 'nodeName',
-}, {
-  title: '准入角色',
-  dataIndex: 'accessRolesStr',
-  key: 'accessRolesStr',
-}, {
-  title: '准入机构',
-  dataIndex: 'accessOrgsStr',
-  key: 'accessOrgsStr',
-}];
 
 @connect(({ absWorkflow, loading }) => ({
   absWorkflow,
@@ -45,87 +29,95 @@ export default class DetailLinear extends Component {
     });
   }
 
-  getNodeList = (workflowNodes) => {
-    const nodeList = [];
+  getNodeStep = (workflowNode) => {
+    const { accessRoles, accessOrgs } = workflowNode;
+    let roleTags = [];
+    if (accessRoles != null) {
+      roleTags = accessRoles.map(role =>
+        <Tag key={role} color="green">{role}</Tag>
+      );
+    } else {
+      roleTags.push(<Tag key="no-role">无</Tag>);
+    }
+    let orgTags = [];
+    if (orgTags != null) {
+      orgTags = accessOrgs.map(org =>
+        <Tag key={org} color="blue">{org}</Tag>
+      );
+    } else {
+      orgTags.push(<Tag key="no-org">无</Tag>);
+    }
+    const description = (
+      <div>
+        <div>
+          <span style={{ padding: '10px' }}>准入角色</span>
+          {roleTags}
+        </div>
+        <div>
+          <span style={{ padding: '10px' }}>准入机构</span>
+          {orgTags}
+        </div>
+      </div>
+    );
+    return (
+      <Step
+        key={workflowNode.id}
+        title={workflowNode.nodeName}
+        description={description}
+      />
+    );
+  }
+
+  getNodeSteps = (workflowNodes) => {
+    const nodeSteps = [];
     workflowNodes.forEach((element) => {
-      const node = element;
-      node.accessRolesStr = node.accessRoles.join(',');
-      node.accessOrgsStr = node.accessOrgs.join(',');
-      nodeList.push(node);
+      nodeSteps.push(this.getNodeStep(element));
     });
-    return nodeList;
+    return nodeSteps;
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    const { dispatch, match: { params: { pid } } } = this.props;
+    this.props.form.validateFieldsAndScroll((error, values) => {
+      if (!error) {
+        dispatch({
+          type: 'absWorkflow/modifyWorkflow',
+          payload: {
+            ...values,
+            workflowId: pid,
+          },
+        });
+      }
+    });
   }
 
   render() {
-    const { form, dispatch, submitting, absWorkflow, loading } = this.props;
-    const { getFieldDecorator, validateFieldsAndScroll, getFieldsError } = form;
+    const { form, submitting, absWorkflow } = this.props;
+    const { getFieldDecorator } = form;
     const { workflowDef = {}, workflowNodes = [] } = absWorkflow;
-    const nodeList = this.getNodeList(workflowNodes);
-    const validate = () => {
-      validateFieldsAndScroll((error, values) => {
-        const workflowId = workflowDef.id;
-        if (!error) {
-          dispatch({
-            type: 'absWorkflow/modifyWorkflow',
-            payload: {
-              ...values,
-              workflowId,
-            },
-          });
-        }
-      });
-    };
-    const errors = getFieldsError();
-    const getErrorInfo = () => {
-      const errorCount = Object.keys(errors).filter(key => errors[key]).length;
-      if (!errors || errorCount === 0) {
-        return null;
-      }
-      const scrollToField = (fieldKey) => {
-        const labelNode = document.querySelector(`label[for="${fieldKey}"]`);
-        if (labelNode) {
-          labelNode.scrollIntoView(true);
-        }
-      };
-      const errorList = Object.keys(errors).map((key) => {
-        if (!errors[key]) {
-          return null;
-        }
-        return (
-          <li key={key} className={styles.errorListItem} onClick={() => scrollToField(key)}>
-            <Icon type="cross-circle-o" className={styles.errorIcon} />
-            <div className={styles.errorMessage}>{errors[key][0]}</div>
-            <div className={styles.errorField}>{fieldLabels[key]}</div>
-          </li>
-        );
-      });
-      return (
-        <span className={styles.errorIcon}>
-          <Popover
-            title="表单校验信息"
-            content={errorList}
-            overlayClassName={styles.errorPopover}
-            trigger="click"
-            getPopupContainer={trigger => trigger.parentNode}
-          >
-            <Icon type="exclamation-circle" />
-          </Popover>
-          {errorCount}
-        </span>
-      );
-    };
+    const nodeSteps = this.getNodeSteps(workflowNodes);
 
-    const submitFormLayout = {
-      wrapperCol: {
-        xs: { span: 24, offset: 0 },
-        sm: { span: 10, offset: 10 },
-      },
-    };
+    const action = (
+      <div>
+        <Button
+          size="large"
+          type="primary"
+          onClick={this.handleSubmit}
+          loading={submitting}
+        >
+          提交
+        </Button>
+      </div>
+    );
 
     return (
-      <PageHeaderLayout title="线性工作流详情">
+      <PageHeaderLayout
+        title="修改线性工作流信息"
+        action={action}
+      >
         <Card bordered={false}>
-          <Form layout="vertical" hideRequiredMark onSubmit={validate}>
+          <Form layout="vertical" hideRequiredMark onSubmit={this.handleSubmit}>
             <Row gutter={16}>
               <Col>
                 <Form.Item label={fieldLabels.workflowName}>
@@ -138,22 +130,14 @@ export default class DetailLinear extends Component {
                 </Form.Item>
               </Col>
             </Row>
-            <Form.Item {...submitFormLayout}>
-              {getErrorInfo()}
-              <Button size="large" type="primary" htmlType="submit" loading={submitting}>
-                提交
-              </Button>
-            </Form.Item>
           </Form>
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>节点清单</div>
-          <Table
-            style={{ marginBottom: 16 }}
-            pagination={false}
-            loading={loading}
-            dataSource={nodeList}
-            columns={nodeColumns}
-          />
+          <Steps direction="vertical" current={-1}>
+            <Step title="开始" />
+            {nodeSteps}
+            <Step title="结束" />
+          </Steps>
         </Card>
       </PageHeaderLayout>
     );
