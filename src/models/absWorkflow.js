@@ -10,7 +10,12 @@ export default {
   effects: {
     *createLinearWorkflow({ payload }, { call, put }) {
       const response = yield call(createLinearWorkflow, payload);
-      yield put(routerRedux.push(`/workflow/linear/success/${response.workflowId}`));
+      if ((Object.prototype.hasOwnProperty.call(response, 'success') && !response.success)
+        || response.error != null) {
+        yield put(routerRedux.push('/exception/500'));
+      } else {
+        yield put(routerRedux.push(`/workflow/linear/success/${response.workflowId}`));
+      }
     },
     *queryWorkflowDetail({ payload }, { call, put }) {
       const { workflowId } = payload;
@@ -35,16 +40,26 @@ export default {
       });
     },
     *modifyWorkflow({ payload }, { call, put }) {
-      yield call(modifyWorkflow, payload);
-      yield put(routerRedux.push(`/workflow/linear/success/${payload.workflowId}`));
+      const response = yield call(modifyWorkflow, payload);
+      if ((Object.prototype.hasOwnProperty.call(response, 'success') && !response.success)
+        || response.error != null) {
+        yield put(routerRedux.push('/exception/500'));
+      } else {
+        yield put(routerRedux.push(`/workflow/linear/success/${payload.workflowId}`));
+      }
     },
     *enableOrDisableWorkflow({ payload }, { call, put }) {
       yield call(enableOrDisableWorkflow, payload);
       const response = yield call(queryWorkflowList);
-      yield put({
-        type: 'showWorkflowList',
-        payload: response,
-      });
+      if ((Object.prototype.hasOwnProperty.call(response, 'success') && !response.success)
+        || response.error != null) {
+        yield put(routerRedux.push('/exception/500'));
+      } else {
+        yield put({
+          type: 'showWorkflowList',
+          payload: response,
+        });
+      }
     },
   },
 

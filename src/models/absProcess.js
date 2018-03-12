@@ -12,15 +12,25 @@ export default {
   effects: {
     *startProcess({ payload }, { call, put }) {
       const response = yield call(startProcess, payload);
-      yield put(routerRedux.push(`/process/todo/detail/${response.processId}`));
+      if ((Object.prototype.hasOwnProperty.call(response, 'success') && !response.success)
+        || response.error != null) {
+        yield put(routerRedux.push('/exception/500'));
+      } else {
+        yield put(routerRedux.push(`/process/todo/detail/${response.processId}`));
+      }
     },
     *cancelProcess({ payload }, { call, put }) {
       yield call(cancelProcess, payload);
       const response = yield call(queryDoneList);
-      yield put({
-        type: 'showDoneList',
-        payload: response,
-      });
+      if ((Object.prototype.hasOwnProperty.call(response, 'success') && !response.success)
+        || response.error != null) {
+        yield put(routerRedux.push('/exception/500'));
+      } else {
+        yield put({
+          type: 'showDoneList',
+          payload: response,
+        });
+      }
     },
     *queryTodoList(_, { call, put }) {
       const response = yield call(queryTodoList);
@@ -69,8 +79,13 @@ export default {
       });
     },
     *transferProcess({ payload }, { call, put }) {
-      yield call(transferProcess, payload);
-      yield put(routerRedux.push(`/process/success/${payload.processId}`));
+      const response = yield call(transferProcess, payload);
+      if ((Object.prototype.hasOwnProperty.call(response, 'success') && !response.success)
+        || response.error != null) {
+        yield put(routerRedux.push('/exception/500'));
+      } else {
+        yield put(routerRedux.push(`/process/success/${payload.processId}`));
+      }
     },
     *queryAbsDocList({ payload }, { call, put }) {
       const { docType } = payload;

@@ -22,10 +22,6 @@ export default class Create extends PureComponent {
         this.props.dispatch({
           type: 'absProject/createAbsProject',
           payload: values,
-          // 增加一个回调，便于在请求完成后执行一些页面的控制逻辑
-          callback: (projectId) => {
-            console.log(projectId);
-          },
         });
       }
     });

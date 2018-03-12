@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd/lib/grid';
 import { connect } from 'dva';
-import { routerRedux } from 'dva/router';
 import {
   Form, Input, Button, Card,
 } from 'antd';
@@ -34,9 +33,6 @@ export default class Modify extends PureComponent {
         this.props.dispatch({
           type: 'absProject/modifyAbsProject',
           payload: { ...values, projectId },
-          callback: () => {
-            this.props.dispatch(routerRedux.push(`/project/success/${projectId}`));
-          },
         });
       }
     });
@@ -108,7 +104,7 @@ export default class Modify extends PureComponent {
             >
               {getFieldDecorator('projectName', {
                 initialValue: this.props.absProject.detail &&
-                              this.props.absProject.detail.projectName,
+                  this.props.absProject.detail.projectName,
                 rules: [{
                   required: true, message: '请输入项目名称',
                 }],
