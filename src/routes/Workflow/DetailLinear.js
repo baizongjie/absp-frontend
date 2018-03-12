@@ -24,17 +24,17 @@ export default class DetailLinear extends Component {
     });
   }
 
-  getEnableStr = (workflowDef) => {
+  handleEnableStr = (workflowDef) => {
     if (workflowDef == null) {
       return '';
     }
     return workflowDef.enabled ? '可用' : '禁用';
   }
 
-  getNodeStep = (workflowNode) => {
+  handleNodeStep = (workflowNode) => {
     const { accessRoles, accessOrgs } = workflowNode;
     let roleTags = [];
-    if (accessRoles != null) {
+    if (accessRoles != null && accessRoles.length !== 0) {
       roleTags = accessRoles.map(role =>
         <Tag key={role} color="green">{role}</Tag>
       );
@@ -42,7 +42,7 @@ export default class DetailLinear extends Component {
       roleTags.push(<Tag key="no-role">无</Tag>);
     }
     let orgTags = [];
-    if (orgTags != null) {
+    if (accessOrgs != null && accessOrgs.length !== 0) {
       orgTags = accessOrgs.map(org =>
         <Tag key={org} color="blue">{org}</Tag>
       );
@@ -70,10 +70,10 @@ export default class DetailLinear extends Component {
     );
   }
 
-  getNodeSteps = (workflowNodes) => {
+  handleNodeSteps = (workflowNodes) => {
     const nodeSteps = [];
     workflowNodes.forEach((element) => {
-      nodeSteps.push(this.getNodeStep(element));
+      nodeSteps.push(this.handleNodeStep(element));
     });
     return nodeSteps;
   }
@@ -81,8 +81,8 @@ export default class DetailLinear extends Component {
   render() {
     const { absWorkflow } = this.props;
     const { workflowDef = {}, workflowNodes = [] } = absWorkflow;
-    const enabledStr = this.getEnableStr(workflowDef);
-    const nodeSteps = this.getNodeSteps(workflowNodes);
+    const enabledStr = this.handleEnableStr(workflowDef);
+    const nodeSteps = this.handleNodeSteps(workflowNodes);
     return (
       <PageHeaderLayout title="线性工作流详情">
         <Card bordered={false}>
