@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
 import { connect } from 'dva';
-import { Card, Table, Button, Row, Col, Steps, Cascader, Form, Modal } from 'antd';
+import { Card, Table, Button, Row, Col, Steps, Cascader, Form, Modal, Popconfirm } from 'antd';
 import { Link } from 'dva/router';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList';
@@ -18,6 +18,13 @@ const attachDocTypeMap = {
 const statusName = ['异常', '运行中', '已完成', '已取消'];
 
 const showSteps = 5;
+
+const operMap = {
+  TransferProcess: '提交',
+  InitProcess: '发起',
+  ReturnProcess: '退回',
+  CancelProcess: '取消',
+};
 
 const getWindowWidth = () => (window.innerWidth || document.documentElement.clientWidth);
 
@@ -38,6 +45,13 @@ const logColumns = [{
   dataIndex: 'toOrg',
   key: 'toOrg',
 }, {
+  title: '操作',
+  dataIndex: 'operation',
+  key: 'operation',
+  render(val) {
+    return <span>{operMap[val]}</span>;
+  },
+}, {
   title: '操作时间',
   dataIndex: 'createTime',
   key: 'createTime',
@@ -47,6 +61,7 @@ const logColumns = [{
   absProcess,
   loading: loading.models.absProcess,
   submitting: loading.effects['absProcess/transferProcess'],
+  returning: loading.effects['absProcess/returnProcess'],
 }))
 @Form.create()
 export default class Detail extends Component {
@@ -112,9 +127,21 @@ export default class Detail extends Component {
     // 渲染进度图
     // 保持进度图内少于等于5个节点
     // 先根据操作日志渲染Steps
-    const progressSteps = logs.map(element =>
-      <Step key={element.fromNodeId} title={element.fromNodeName} description={element.fromOrg} status="finish" />
-    );
+    const progressSteps = [];
+    logs.forEach((element) => {
+      if (element.operation === 'ReturnProcess') {
+        progressSteps.pop();
+      } else {
+        progressSteps.push(
+          <Step
+            key={element.fromNodeId}
+            title={element.fromNodeName}
+            description={element.fromOrg}
+            status="finish"
+          />
+        );
+      }
+    });
     let currentStep = progressSteps.length - 1;
     // 添加当前节点Step
     if (!detail.canceled) {
@@ -217,6 +244,24 @@ export default class Detail extends Component {
     return options;
   }
 
+  checkIsStartNode = (detail, nodes) => {
+    if (detail == null || nodes === null || nodes.lenght === 0) {
+      return true;
+    }
+    const nodeMap = {};
+    nodes.forEach((element) => {
+      nodeMap[element.id] = element;
+    });
+    const currentNode = nodeMap[detail.currentNodeId];
+    if (currentNode == null) {
+      return true;
+    }
+    if (currentNode.firstNode) {
+      return true;
+    }
+    return false;
+  }
+
   showModal = () => {
     this.setState({
       modalVisible: true,
@@ -246,13 +291,24 @@ export default class Detail extends Component {
     });
   }
 
+  returnProcess = () => {
+    const { dispatch, match: { params: { pid } } } = this.props;
+    dispatch({
+      type: 'absProcess/returnProcess',
+      payload: {
+        processId: pid,
+      },
+    });
+  }
+
   render() {
     const { modalVisible } = this.state;
-    const { absProcess, form, location, submitting } = this.props;
+    const { absProcess, form, location, submitting, returning } = this.props;
     const { getFieldDecorator } = form;
     const { pathname } = location;
-    const isTodo = pathname.indexOf('/process/todo/detail/') === 0;
     const { detail = {}, logs = [], workflowNodes = [], loading } = absProcess;
+    const isTodo = pathname.indexOf('/process/todo/detail/') === 0;
+    const isFirstNode = this.checkIsStartNode(detail, workflowNodes);
     const pageTitle = this.handlePageTitle(detail);
     const status = this.handleStatusStr(detail);
     const progressSteps = this.handleSteps(detail, logs, workflowNodes);
@@ -320,14 +376,25 @@ export default class Detail extends Component {
     const action = (
       <div>
         {actionContent}
-        <Button
-          size="large"
-          type="primary"
-          disabled={!isTodo}
-          onClick={this.showModal}
-        >
-          提交
-        </Button>
+        <Button.Group>
+          <Popconfirm title="确定要退回流程吗？" onConfirm={() => this.returnProcess()}>
+            <Button
+              size="large"
+              disabled={!isTodo || isFirstNode}
+              loading={returning}
+            >
+              退回
+            </Button>
+          </Popconfirm>
+          <Button
+            size="large"
+            type="primary"
+            disabled={!isTodo}
+            onClick={this.showModal}
+          >
+            提交
+          </Button>
+        </Button.Group>
       </div>
     );
 

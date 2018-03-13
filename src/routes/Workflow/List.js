@@ -101,7 +101,7 @@ export default class List extends PureComponent {
               <Form onSubmit={this.handleSearch} layout="inline">
                 <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
                   <Col md={6} sm={24}>
-                    <Link to="/workflow/create/linear">
+                    <Link to="/workflow/linear/create">
                       <Button icon="plus" type="primary">
                         新建线性工作流
                       </Button>

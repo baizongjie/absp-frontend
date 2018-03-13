@@ -41,6 +41,18 @@ export async function transferProcess(params) {
 }
 
 /**
+ * 流程实例退回
+ */
+export async function returnProcess(params) {
+  return request('/api/v1/returnProcess', {
+    method: 'POST',
+    body: {
+      ...params,
+    },
+  });
+}
+
+/**
  * 取消流程实例
  */
 export async function cancelProcess(params) {

@@ -1,5 +1,5 @@
 import { routerRedux } from 'dva/router';
-import { startProcess, queryProcessDetail, queryProcessLogs, transferProcess, cancelProcess, queryTodoList, queryDoneList } from '../services/absProcess';
+import { startProcess, queryProcessDetail, queryProcessLogs, transferProcess, cancelProcess, queryTodoList, queryDoneList, returnProcess } from '../services/absProcess';
 import { queryAbsProjectList } from '../services/absProject';
 import { queryAccessableWorkflows, queryWorkflowDetail } from '../services/absWorkflow';
 
@@ -85,6 +85,15 @@ export default {
         yield put(routerRedux.push('/exception/500'));
       } else {
         yield put(routerRedux.push(`/process/success/${payload.processId}`));
+      }
+    },
+    *returnProcess({ payload }, { call, put }) {
+      const response = yield call(returnProcess, payload);
+      if ((Object.prototype.hasOwnProperty.call(response, 'success') && !response.success)
+        || response.error != null) {
+        yield put(routerRedux.push('/exception/500'));
+      } else {
+        yield put(routerRedux.push('/process/todo/list'));
       }
     },
     *queryAbsDocList({ payload }, { call, put }) {
