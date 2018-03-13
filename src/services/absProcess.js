@@ -4,7 +4,7 @@ import request from '../utils/request';
  * 启动流程实例
  */
 export async function startProcess(params) {
-  return request('/api/v1/startProcess', {
+  return request('/api/v1/process/start', {
     method: 'POST',
     body: {
       ...params,
@@ -17,7 +17,7 @@ export async function startProcess(params) {
  * @param {string} processId 项目ID
  */
 export async function queryProcessDetail(processId) {
-  return request(`/api/v1/queryProcessDetail?pid=${processId}`);
+  return request(`/api/v1/process/detail?pid=${processId}`);
 }
 
 /**
@@ -25,14 +25,14 @@ export async function queryProcessDetail(processId) {
  * @param {string} processId 项目ID
  */
 export async function queryProcessLogs(processId) {
-  return request(`/api/v1/queryProcessLogs?pid=${processId}`);
+  return request(`/api/v1/process/detail/logs?pid=${processId}`);
 }
 
 /**
  * 流程实例流转
  */
 export async function transferProcess(params) {
-  return request('/api/v1/transferProcess', {
+  return request('/api/v1/process/transfer', {
     method: 'POST',
     body: {
       ...params,
@@ -44,7 +44,7 @@ export async function transferProcess(params) {
  * 流程实例退回
  */
 export async function returnProcess(params) {
-  return request('/api/v1/returnProcess', {
+  return request('/api/v1/process/return', {
     method: 'POST',
     body: {
       ...params,
@@ -56,7 +56,7 @@ export async function returnProcess(params) {
  * 取消流程实例
  */
 export async function cancelProcess(params) {
-  return request('/api/v1/cancelProcess', {
+  return request('/api/v1/process/cancel', {
     method: 'POST',
     body: {
       ...params,
@@ -68,12 +68,12 @@ export async function cancelProcess(params) {
  * 查询待办
  */
 export async function queryTodoList() {
-  return request('/api/v1/queryTodoList');
+  return request('/api/v1/process/todo/list');
 }
 
 /**
  * 查询已办
  */
 export async function queryDoneList() {
-  return request('/api/v1/queryDoneList');
+  return request('/api/v1/process/done/list');
 }
