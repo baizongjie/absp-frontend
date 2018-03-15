@@ -23,6 +23,7 @@ const operMap = {
   TransferProcess: '提交',
   InitProcess: '发起',
   ReturnProcess: '退回',
+  WithdrawProcess: '撤回',
   CancelProcess: '取消',
 };
 
@@ -62,6 +63,7 @@ const logColumns = [{
   loading: loading.models.absProcess,
   submitting: loading.effects['absProcess/transferProcess'],
   returning: loading.effects['absProcess/returnProcess'],
+  withdrawing: loading.effects['absProcess/withdrawProcess'],
 }))
 @Form.create()
 export default class Detail extends Component {
@@ -74,12 +76,6 @@ export default class Detail extends Component {
     const { dispatch, match: { params: { pid } } } = this.props;
     dispatch({
       type: 'absProcess/queryProcessAndWorkflowDetail',
-      payload: {
-        processId: pid,
-      },
-    });
-    dispatch({
-      type: 'absProcess/queryProcessLogs',
       payload: {
         processId: pid,
       },
@@ -136,7 +132,8 @@ export default class Detail extends Component {
     // 先根据操作日志渲染Steps
     const progressSteps = [];
     logs.forEach((element) => {
-      if (element.operation === 'ReturnProcess') {
+      if (element.operation === 'ReturnProcess'
+        || element.operation === 'WithdrawProcess') {
         progressSteps.pop();
       } else {
         progressSteps.push(
@@ -271,6 +268,46 @@ export default class Detail extends Component {
     return false;
   }
 
+  checkOrgCanWithdraw = (detail, logs, userOrg) => {
+    if (Object.keys(detail).length === 0
+      || Object.keys(logs).length === 0) {
+      return false;
+    }
+    const transLogs = [];
+    logs.forEach((element) => {
+      if (element.operation === 'TransferProcess'
+        && element.toOrg === detail.currentOwner
+        && element.toNodeId === detail.currentNodeId) {
+        transLogs.push(element);
+      }
+    });
+
+    if (transLogs.length === 0) {
+      return false;
+    }
+
+    // find latest log
+    let targetLog = transLogs[0];
+    if (transLogs.length !== 1) {
+      const idPrefix = `processLog-${detail.processId}-`;
+      let targetId = parseInt(targetLog.id.replace(idPrefix, ''), 10);
+      transLogs.forEach((element) => {
+        const eleId = parseInt(element.id.replace(idPrefix, ''), 10);
+        if (eleId > targetId) {
+          targetLog = element;
+          targetId = eleId;
+        }
+      });
+    }
+
+    // check user is last tranfer org
+    if (targetLog.fromOrg !== userOrg) {
+      return false;
+    }
+
+    return true;
+  }
+
   showModal = () => {
     this.setState({
       modalVisible: true,
@@ -310,18 +347,34 @@ export default class Detail extends Component {
     });
   }
 
+  withdrawProcess = () => {
+    const { dispatch, match: { params: { pid } } } = this.props;
+    dispatch({
+      type: 'absProcess/withdrawProcess',
+      payload: {
+        processId: pid,
+      },
+    });
+  }
+
   render() {
     const { modalVisible } = this.state;
-    const { absProcess, form, location, submitting, returning } = this.props;
+    const { absProcess, form, location, submitting, returning, withdrawing } = this.props;
     const { getFieldDecorator } = form;
     const { pathname } = location;
     const { detail = {}, logs = [], workflowNodes = [], loading } = absProcess;
     const isTodo = pathname.indexOf('/process/todo/detail/') === 0;
-    const isFirstNode = this.checkIsStartNode(detail, workflowNodes);
+    const isStartNode = this.checkIsStartNode(detail, workflowNodes);
+    const disableReturnBtn = isTodo ? isStartNode : true;
+    // TODO 检查登录用户机构是否为可回退机构
+    const userOrg = '@org1.example.com';
+    const disableWithdrawBtn = isTodo || isStartNode ? true
+      : !this.checkOrgCanWithdraw(detail, logs, userOrg);
+    const options = isTodo ? this.handleNextOpts(detail, workflowNodes) : [];
     const pageTitle = this.handlePageTitle(detail);
     const status = this.handleStatusStr(detail);
     const progressSteps = this.handleSteps(detail, logs, workflowNodes);
-    const options = isTodo ? this.handleNextOpts(detail, workflowNodes) : [];
+
     const extra = (
       <Row>
         <Col xs={24} sm={12}>
@@ -389,10 +442,19 @@ export default class Detail extends Component {
           <Popconfirm title="确定要退回流程吗？" onConfirm={() => this.returnProcess()}>
             <Button
               size="large"
-              disabled={!isTodo || isFirstNode}
+              disabled={disableReturnBtn}
               loading={returning}
             >
               退回
+            </Button>
+          </Popconfirm>
+          <Popconfirm title="确定要撤回流程吗？" onConfirm={() => this.withdrawProcess()}>
+            <Button
+              size="large"
+              disabled={disableWithdrawBtn}
+              loading={withdrawing}
+            >
+              撤回
             </Button>
           </Popconfirm>
           <Button

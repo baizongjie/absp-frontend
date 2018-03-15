@@ -53,6 +53,18 @@ export async function returnProcess(params) {
 }
 
 /**
+ * 流程实例撤回
+ */
+export async function withdrawProcess(params) {
+  return request('/api/v1/process/withdraw', {
+    method: 'POST',
+    body: {
+      ...params,
+    },
+  });
+}
+
+/**
  * 取消流程实例
  */
 export async function cancelProcess(params) {

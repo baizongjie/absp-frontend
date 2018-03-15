@@ -1,5 +1,5 @@
 import { routerRedux } from 'dva/router';
-import { startProcess, queryProcessDetail, queryProcessLogs, transferProcess, cancelProcess, queryTodoList, queryDoneList, returnProcess } from '../services/absProcess';
+import { startProcess, queryProcessDetail, queryProcessLogs, transferProcess, cancelProcess, queryTodoList, queryDoneList, returnProcess, withdrawProcess } from '../services/absProcess';
 import { queryAbsProjectList } from '../services/absProject';
 import { queryWorkflowDetail } from '../services/absWorkflow';
 
@@ -65,10 +65,12 @@ export default {
     *queryProcessAndWorkflowDetail({ payload }, { call, put }) {
       const { processId } = payload;
       const detailResponse = yield call(queryProcessDetail, processId);
+      const logsResponse = yield call(queryProcessLogs, processId);
       const { workflowId } = detailResponse;
       const workflowResponse = yield call(queryWorkflowDetail, workflowId);
       const rspPayload = {
         detail: detailResponse,
+        logs: logsResponse,
         ...workflowResponse,
       };
       yield put({
@@ -92,6 +94,15 @@ export default {
         yield put(routerRedux.push('/exception/500'));
       } else {
         yield put(routerRedux.push('/process/todo/list'));
+      }
+    },
+    *withdrawProcess({ payload }, { call, put }) {
+      const response = yield call(withdrawProcess, payload);
+      if ((Object.prototype.hasOwnProperty.call(response, 'success') && !response.success)
+        || response.error != null) {
+        yield put(routerRedux.push('/exception/500'));
+      } else {
+        yield put(routerRedux.push(`/process/todo/detail/${payload.processId}`));
       }
     },
     *queryAbsDocList({ payload }, { call, put }) {
