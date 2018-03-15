@@ -13,8 +13,9 @@ const docTypes = (
   <Option key="project" value="project">项目</Option>
 );
 
-@connect(({ absProcess, loading }) => ({
+@connect(({ absProcess, absWorkflow, loading }) => ({
   absProcess,
+  absWorkflow,
   loading: loading.models.absProcess,
   submitting: loading.effects['absProcess/startProcess'],
 }))
@@ -29,9 +30,8 @@ export default class Start extends PureComponent {
 
   componentDidMount() {
     window.addEventListener('resize', this.resizeFooterToolbar);
-    this.handleDocTypeChange('project');
     this.queryAccessableWorkflows();
-    this.queryDocList();
+    this.handleDocTypeChange('project');
   }
 
   componentWillUnmount() {
@@ -55,7 +55,7 @@ export default class Start extends PureComponent {
   }
 
   handleWorkflowOpts = (workflowList) => {
-    if (workflowList == null) {
+    if (Object.keys(workflowList).length === 0) {
       return [];
     }
     const workflowOpts = workflowList.map(node =>
@@ -65,7 +65,7 @@ export default class Start extends PureComponent {
   }
 
   handleDefaultWorkflowId = (workflowList) => {
-    if (workflowList === null || workflowList.length === 0) {
+    if (Object.keys(workflowList).length === 0) {
       return null;
     }
     return workflowList[0].id;
@@ -123,6 +123,7 @@ export default class Start extends PureComponent {
       selectedDocType: value,
       docColumns: columns,
     });
+    this.queryDocList();
   }
 
   handleSubmit = (e) => {
@@ -144,7 +145,7 @@ export default class Start extends PureComponent {
   queryAccessableWorkflows = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'absProcess/queryAccessableWorkflows',
+      type: 'absWorkflow/queryAccessableWorkflows',
     });
   }
 
@@ -161,11 +162,11 @@ export default class Start extends PureComponent {
   };
 
   render() {
-    const { submitting, absProcess, loading } = this.props;
+    const { submitting, absWorkflow, loading } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const { workflowList = [] } = absProcess;
-    const workflowOpts = this.handleWorkflowOpts(workflowList);
-    const defaultWorkflowId = this.handleDefaultWorkflowId(workflowList);
+    const { data = [] } = absWorkflow;
+    const workflowOpts = this.handleWorkflowOpts(data);
+    const defaultWorkflowId = this.handleDefaultWorkflowId(data);
 
     const action = (
       <div>

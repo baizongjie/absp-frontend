@@ -73,7 +73,13 @@ export default class Detail extends Component {
     // 获取url中的pid参数
     const { dispatch, match: { params: { pid } } } = this.props;
     dispatch({
-      type: 'absProcess/queryProcessDetailWithLogsAndWorkflow',
+      type: 'absProcess/queryProcessAndWorkflowDetail',
+      payload: {
+        processId: pid,
+      },
+    });
+    dispatch({
+      type: 'absProcess/queryProcessLogs',
       payload: {
         processId: pid,
       },
@@ -97,7 +103,7 @@ export default class Detail extends Component {
   }
 
   handlePageTitle = (detail) => {
-    if (detail == null) {
+    if (Object.keys(detail).length === 0) {
       return '';
     }
     const title = `${detail.workflowName} - ${detail.attachDocName}`;
@@ -105,7 +111,7 @@ export default class Detail extends Component {
   }
 
   handleStatusStr = (detail) => {
-    if (detail == null) {
+    if (Object.keys(detail).length === 0) {
       return 0;
     }
     let status = 0;
@@ -120,9 +126,10 @@ export default class Detail extends Component {
   }
 
   handleSteps = (detail, logs, nodes) => {
-    if (detail == null || logs === null || nodes === null
-      || logs.length === 0 || nodes.lenght === 0) {
-      return null;
+    if (Object.keys(detail).length === 0
+      || Object.keys(logs).length === 0
+      || Object.keys(nodes).length === 0) {
+      return [];
     }
     // 渲染进度图
     // 保持进度图内少于等于5个节点
@@ -193,7 +200,8 @@ export default class Detail extends Component {
   }
 
   handleNextOpts = (detail, nodes) => {
-    if (detail == null || nodes.length === 0 || nodes.lenght === 0) {
+    if (Object.keys(detail).length === 0
+      || Object.keys(nodes).length === 0) {
       return [];
     }
     // 先将所有节点映射一个map
@@ -245,7 +253,8 @@ export default class Detail extends Component {
   }
 
   checkIsStartNode = (detail, nodes) => {
-    if (detail == null || nodes === null || nodes.lenght === 0) {
+    if (Object.keys(detail).length === 0
+      || Object.keys(nodes).length === 0) {
       return true;
     }
     const nodeMap = {};
