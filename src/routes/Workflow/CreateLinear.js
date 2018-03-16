@@ -458,7 +458,6 @@ export default class CreateLinear extends PureComponent {
               </Col>
             </Row>
           </Modal>
-          );
         </Card>
       </PageHeaderLayout>
     );
