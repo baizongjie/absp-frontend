@@ -126,7 +126,7 @@ export const getRouterData = (app) => {
     },
     // 待办流程详情
     '/process/todo/detail/:pid': {
-      component: dynamicWrapper(app, ['absProcess', 'absWorkflow'], () => import('../routes/Process/Detail')),
+      component: dynamicWrapper(app, ['user', 'absProcess', 'absWorkflow'], () => import('../routes/Process/Detail')),
     },
     // 发起流程
     '/process/start': {

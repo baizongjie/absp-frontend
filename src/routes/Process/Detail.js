@@ -58,8 +58,9 @@ const logColumns = [{
   key: 'createTime',
 }];
 
-@connect(({ absProcess, loading }) => ({
+@connect(({ absProcess, user, loading }) => ({
   absProcess,
+  user,
   loading: loading.models.absProcess,
   submitting: loading.effects['absProcess/transferProcess'],
   returning: loading.effects['absProcess/returnProcess'],
@@ -359,7 +360,7 @@ export default class Detail extends Component {
 
   render() {
     const { modalVisible } = this.state;
-    const { absProcess, form, location, submitting, returning, withdrawing } = this.props;
+    const { absProcess, form, location, submitting, returning, withdrawing, user } = this.props;
     const { getFieldDecorator } = form;
     const { pathname } = location;
     const { detail = {}, logs = [], workflowNodes = [], loading } = absProcess;
@@ -367,7 +368,7 @@ export default class Detail extends Component {
     const isStartNode = this.checkIsStartNode(detail, workflowNodes);
     const disableReturnBtn = isTodo ? isStartNode : true;
     // TODO 检查登录用户机构是否为可回退机构
-    const userOrg = '@org1.example.com';
+    const userOrg = user.currentUser.org;
     const disableWithdrawBtn = isTodo || isStartNode ? true
       : !this.checkOrgCanWithdraw(detail, logs, userOrg);
     const options = isTodo ? this.handleNextOpts(detail, workflowNodes) : [];

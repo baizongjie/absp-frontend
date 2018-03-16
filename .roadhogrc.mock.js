@@ -29,6 +29,7 @@ const proxy = {
     $body: {
       name: '涂文斌',
       userid: '00000001',
+      org: '@org1.example.com',
       notifyCount: 12,
     },
   },
