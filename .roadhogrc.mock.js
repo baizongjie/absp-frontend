@@ -17,6 +17,7 @@ const proxy = {
   // 'GET /api/v1/queryAbsProjectList': [{},{}],
   'GET /api/v1/*': 'http://localhost:9010/',
   'POST /api/v1/*': 'http://localhost:9010/',
+  'POST /upload': 'http://localhost:8080/',
   // 支持值为 Object 和 Array
   'GET /api/currentUser': {
     $desc: "获取当前用户接口",
