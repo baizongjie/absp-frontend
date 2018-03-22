@@ -3,28 +3,41 @@ import { Row, Col } from 'antd/lib/grid';
 import { connect } from 'dva';
 
 import {
-  Form, Input, Button, Card,
+  Form, Input, Button, Card, Icon, Upload, message, 
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import './style.less';
+import AttachmentUpload from '../Attachment/AttachmentUpload';
+import AttachmentDownload from '../Attachment/AttachmentDownload';
 
 const FormItem = Form.Item;
 
-@connect(({ loading }) => ({
-  submitting: loading.effects['absProject/createAbsProject'],
+@connect(({ absAttachment,loading }) => ({
+  absAttachment,submitting: loading.effects['absProject/createAbsProject'],
 }))
 @Form.create()
 export default class Create extends PureComponent {
+  state = {
+    attachmentIdList: [],
+  }
   handleSubmit = (e) => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        values.attachmentIdList=this.state.attachmentIdList;
+        console.log(JSON.stringify(values));
         this.props.dispatch({
           type: 'absProject/createAbsProject',
           payload: values,
         });
       }
     });
+  }
+  onUploadChanged = (attachmentIdList) => {  
+    this.setState({  
+      attachmentIdList: attachmentIdList  
+    });  
+    console.log(attachmentIdList);
   }
   render() {
     const { submitting } = this.props;
@@ -124,6 +137,9 @@ export default class Create extends PureComponent {
             <Row>
               {getTxtInpuHalfCol('scale', '发行规模', '100亿元')}
               {getTxtInpuHalfCol('basicAssets', '基础资产', '小微企业、个人按揭贷款')}
+            </Row>
+            <Row>
+                <AttachmentUpload callbackParent={this.onUploadChanged}  />
             </Row>
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
               <Button size="large" type="primary" htmlType="submit" loading={submitting}>

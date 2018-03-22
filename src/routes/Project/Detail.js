@@ -3,10 +3,12 @@ import { connect } from 'dva';
 import { Card, Divider } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import DescriptionList from '../../components/DescriptionList';
+import AttachmentDownload from '../Attachment/AttachmentDownload';
 
 const { Description } = DescriptionList;
 
-@connect(({ absProject, loading }) => ({
+@connect(({ absAttachment,absProject, loading }) => ({
+  absAttachment,
   absProject,
   loading: loading.effects['absProject/queryAbsProjectDetail'],
 }))
@@ -39,6 +41,7 @@ export default class Detail extends Component {
       accountant,
       scale,
       basicAssets,
+      attachmentIdList,
     } = detail;
 
     return (
@@ -81,6 +84,8 @@ export default class Detail extends Component {
             <Description term="发行规模">{scale}</Description>
             <Description term="基础资产">{basicAssets}</Description>
           </DescriptionList>
+
+          <AttachmentDownload  attachmentIdList = {attachmentIdList}/>
         </Card>
       </PageHeaderLayout>
     );
