@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
 import {
-  Card, Upload, message, Button, Icon,
+  Upload, message, Button, Icon,
 } from 'antd';
 import { connect } from 'dva';
 
-@connect(({ absAttachment,loading}) => ({
+@connect(({ absAttachment, loading }) => ({
   absAttachment,
-  uploading : loading.effects['absAttachment/attachmentUpload'],
-  }))
+  uploading: loading.effects['absAttachment/attachmentUpload'],
+}))
 export default class AttachmentUpload extends PureComponent {
   state = {
     fileList: [],
@@ -24,7 +24,7 @@ export default class AttachmentUpload extends PureComponent {
     fileList = fileList.map((file) => {
       if (file.response) {
         // Component will show file.url as link
-        file.url = 'http://localhost:8080'+file.response.file_path;
+        file.url = 'http://localhost:8080' + file.response.file_path;
       }
       return file;
     });
@@ -37,36 +37,29 @@ export default class AttachmentUpload extends PureComponent {
       return true;
     });
 
-    this.setState({ fileList:fileList });
+    this.setState({ fileList: fileList });
 
     if (info.file.status === 'done') {
-        message.success(`${info.file.name} attachment uploaded successfully`);
+      message.success(`${info.file.name} attachment uploaded successfully`);
 
-        this.props.dispatch({
-            type: 'absAttachment/attachmentUpload',
-            payload: {
-              fileName: info.file.response.file_name,
-              filePath: info.file.response.file_path,
-              fileSha1: info.file.response.file_sha1,
-            },
-            // 增加一个回调，便于在请求完成后执行一些页面的控制逻辑
-            callback: (attachmentId) => {
-              let attachmentIdList = this.state.attachmentIdList;
-              attachmentIdList.push(attachmentId);
-              this.setState({attachmentIdList:attachmentIdList});
-              //这里将子组件的信息传递给了父组件  
-              this.props.callbackParent(this.state.attachmentIdList);  
-            },
-        });
-
-        console.log(info.file.response.file_name);
-        console.log(info.file.response.file_path);
-        console.log(info.file.response.file_sha1);
-
+      this.props.dispatch({
+        type: 'absAttachment/attachmentUpload',
+        payload: {
+          fileName: info.file.response.file_name,
+          filePath: info.file.response.file_path,
+          fileSha1: info.file.response.file_sha1,
+        },
+        // 增加一个回调，便于在请求完成后执行一些页面的控制逻辑
+        callback: (attachmentId) => {
+          let attachmentIdList = this.state.attachmentIdList;
+          attachmentIdList.push(attachmentId);
+          this.setState({ attachmentIdList: attachmentIdList });
+          this.props.callbackParent(this.state.attachmentIdList);  
+        },
+      });
     } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} attachment upload failed.`);
+      message.error(`${info.file.name} attachment upload failed.`);
     }
-
   }
   render() {
     const props = {
@@ -75,12 +68,12 @@ export default class AttachmentUpload extends PureComponent {
       onChange: this.handleChange,
       multiple: true,
     };
-    const {uploading} = this.props;
+    const { uploading } = this.props;
 
     return (
       <Upload {...props} fileList={this.state.fileList}>
         <Button> 
-          <Icon type="upload" loading={uploading}/> upload
+          <Icon type="upload" loading={uploading} /> upload
         </Button>
       </Upload>
     );

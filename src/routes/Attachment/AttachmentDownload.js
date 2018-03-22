@@ -1,12 +1,11 @@
-import React, { PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import {  Card, Form, List, Divider } from 'antd';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import { Card, List } from 'antd';
 
 import styles from './style.less';
 
 @connect(({ absAttachment}) => ({
-  absAttachment,
+  absAttachment, 
 }))
 export default class AttachmentDownload extends PureComponent {
   componentWillReceiveProps() {

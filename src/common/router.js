@@ -74,7 +74,7 @@ export const getRouterData = (app) => {
     },
     // 新增资产证券化项目
     '/project/create': {
-      component: dynamicWrapper(app, ['absProject'], () => import('../routes/Project/Create')),
+      component: dynamicWrapper(app, ['absAttachment'], () => import('../routes/Project/Create')),
     },
     // 资产证券化项目信息修改
     '/project/modify/:pid': {
@@ -82,7 +82,7 @@ export const getRouterData = (app) => {
     },
     // 资产证券化项目明细查询
     '/project/detail/:pid': {
-      component: dynamicWrapper(app, ['absProject'], () => import('../routes/Project/Detail')),
+      component: dynamicWrapper(app, ['absProject','absAttachment'], () => import('../routes/Project/Detail')),
     },
     // 资产证券化项目列表查询
     '/project/list': {
