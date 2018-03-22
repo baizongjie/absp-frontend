@@ -21,6 +21,10 @@ const statusName = ['异常', '运行中', '已完成', '已取消'];
 }))
 @Form.create()
 export default class ListDone extends PureComponent {
+  state = {
+    keywords: [],
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -50,21 +54,38 @@ export default class ListDone extends PureComponent {
     },
     {
       title: '状态',
+      key: 'status',
+      filters: [
+        {
+          text: statusName[0],
+          value: 0,
+        },
+        {
+          text: statusName[1],
+          value: 1,
+        },
+        {
+          text: statusName[2],
+          value: 2,
+        },
+        {
+          text: statusName[3],
+          value: 3,
+        },
+      ],
+      onFilter: (value, record) => {
+        const status = this.transRecordStatus(record);
+        return status === value;
+      },
       render: (text, record) => {
-        let status = 0;
-        if (record.canceled) {
-          status = 3;
-        } else if (record.finished) {
-          status = 2;
-        } else if (!record.finished && !record.canceled) {
-          status = 1;
-        }
+        const status = this.transRecordStatus(record);
         return <Badge status={statusMap[status]} text={statusName[status]} />;
       },
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
+      sorter: (a, b) => a.createTime > b.createTime,
     },
     {
       title: '发起机构',
@@ -96,6 +117,18 @@ export default class ListDone extends PureComponent {
     },
   ];
 
+  transRecordStatus = (record) => {
+    let status = 0;
+    if (record.canceled) {
+      status = 3;
+    } else if (record.finished) {
+      status = 2;
+    } else if (!record.finished && !record.canceled) {
+      status = 1;
+    }
+    return status;
+  }
+
   cancelProcess = (record) => {
     const { dispatch } = this.props;
     dispatch({
@@ -106,14 +139,44 @@ export default class ListDone extends PureComponent {
 
   handleFormReset = () => {
     const { form } = this.props;
+    this.setState({
+      keywords: [],
+    });
     form.resetFields();
   }
 
   handleSearch = (e) => {
     e.preventDefault();
+    const { form: { getFieldValue } } = this.props;
+    const keywordsStr = getFieldValue('keywords') || '';
+    const keywords = keywordsStr.split(' ').filter((item) => {
+      return item !== '';
+    });
+    this.setState({
+      keywords,
+    });
   }
+
+  filterTableData = () => {
+    const { absProcess: { data } } = this.props;
+    const { keywords } = this.state;
+    if (keywords.length === 0) {
+      return data;
+    }
+    const filterDatas = data.filter((item) => {
+      let includeKeys = true;
+      keywords.forEach((keyword) => {
+        includeKeys = includeKeys
+          && item.attachDocName.toLowerCase().includes(keyword.toLowerCase());
+      });
+      return includeKeys;
+    });
+    return filterDatas;
+  }
+
   render() {
-    const { absProcess: { data }, loading, form: { getFieldDecorator } } = this.props;
+    const { loading, form: { getFieldDecorator } } = this.props;
+    const tableData = this.filterTableData();
     return (
       <PageHeaderLayout title="已办任务">
         <Card bordered={false}>
@@ -130,7 +193,7 @@ export default class ListDone extends PureComponent {
                   </Col>
                   <Col md={12} sm={24}>
                     <FormItem label="文档名称">
-                      {getFieldDecorator('no')(
+                      {getFieldDecorator('keywords')(
                         <Input placeholder="文档名称" />
                       )}
                     </FormItem>
@@ -149,7 +212,7 @@ export default class ListDone extends PureComponent {
               loading={loading}
               rowKey={record => record.id}
               columns={this.columns}
-              dataSource={data}
+              dataSource={tableData}
               onChange={this.handleTableChange}
             />
           </div>

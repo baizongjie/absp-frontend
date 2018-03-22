@@ -18,6 +18,10 @@ const subDocTypeMap = {
 }))
 @Form.create()
 export default class List extends PureComponent {
+  state = {
+    keywords: [],
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -40,6 +44,21 @@ export default class List extends PureComponent {
     {
       title: '是否可用',
       dataIndex: 'enabled',
+      key: 'enabled',
+      filters: [
+        {
+          text: '可用',
+          value: true,
+        },
+        {
+          text: '禁用',
+          value: false,
+        },
+      ],
+      onFilter: (value, record) => {
+        const boolValue = value === 'true';
+        return record.enabled === boolValue;
+      },
       render(val) {
         const statusName = val ? '可用' : '禁用';
         const statusId = val ? 'success' : 'error';
@@ -73,6 +92,7 @@ export default class List extends PureComponent {
   ];
 
   enableOrDisableWorkflow = (record) => {
+    this.handleFormReset();
     const { dispatch } = this.props;
     dispatch({
       type: 'absWorkflow/enableOrDisableWorkflow',
@@ -85,14 +105,45 @@ export default class List extends PureComponent {
 
   handleFormReset = () => {
     const { form } = this.props;
+    this.setState({
+      keywords: [],
+    });
     form.resetFields();
   }
 
   handleSearch = (e) => {
     e.preventDefault();
+    const { form: { getFieldValue } } = this.props;
+    const keywordsStr = getFieldValue('keywords') || '';
+    const keywords = keywordsStr.split(' ').filter((item) => {
+      return item !== '';
+    });
+    this.setState({
+      keywords,
+    });
   }
+
+  filterTableData = () => {
+    const { absWorkflow: { data } } = this.props;
+    const { keywords } = this.state;
+    if (keywords.length === 0) {
+      return data;
+    }
+    const filterDatas = data.filter((item) => {
+      let includeKeys = true;
+      keywords.forEach((keyword) => {
+        includeKeys = includeKeys
+          && item.workflowName.toLowerCase().includes(keyword.toLowerCase());
+      });
+      return includeKeys;
+    });
+
+    return filterDatas;
+  }
+
   render() {
-    const { absWorkflow: { data }, loading, form: { getFieldDecorator } } = this.props;
+    const { loading, form: { getFieldDecorator } } = this.props;
+    const tableData = this.filterTableData();
     return (
       <PageHeaderLayout title="查询表格">
         <Card bordered={false}>
@@ -109,7 +160,7 @@ export default class List extends PureComponent {
                   </Col>
                   <Col md={12} sm={24}>
                     <FormItem label="工作流名称">
-                      {getFieldDecorator('no')(
+                      {getFieldDecorator('keywords')(
                         <Input placeholder="输入工作流名称" />
                       )}
                     </FormItem>
@@ -128,8 +179,7 @@ export default class List extends PureComponent {
               loading={loading}
               rowKey={record => record.id}
               columns={this.columns}
-              dataSource={data}
-              onChange={this.handleTableChange}
+              dataSource={tableData}
             />
           </div>
         </Card>

@@ -14,6 +14,10 @@ const FormItem = Form.Item;
 }))
 @Form.create()
 export default class List extends PureComponent {
+  state = {
+    keywords: [],
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -82,14 +86,46 @@ export default class List extends PureComponent {
 
   handleFormReset = () => {
     const { form } = this.props;
+    this.setState({
+      keywords: [],
+    });
     form.resetFields();
   }
 
   handleSearch = (e) => {
     e.preventDefault();
+    const { form: { getFieldValue } } = this.props;
+    const keywordsStr = getFieldValue('keywords') || '';
+    const keywords = keywordsStr.split(' ').filter((item) => {
+      return item !== '';
+    });
+    this.setState({
+      keywords,
+    });
   }
+
+  filterTableData = () => {
+    const { absProject: { data } } = this.props;
+    const { keywords } = this.state;
+    if (keywords.length === 0) {
+      return data;
+    }
+    const filterDatas = data.filter((item) => {
+      let includeKeys = true;
+      keywords.forEach((keyword) => {
+        includeKeys = includeKeys
+          && item.projectName.toLowerCase().includes(keyword.toLowerCase());
+      });
+      return includeKeys;
+    });
+
+    return filterDatas;
+  }
+
   render() {
-    const { absProject: { data }, loading, form: { getFieldDecorator } } = this.props;
+    const { loading, form: { getFieldDecorator } } = this.props;
+    const tableData = this.filterTableData();
+
     return (
       <PageHeaderLayout title="查询表格">
         <Card bordered={false}>
@@ -106,7 +142,7 @@ export default class List extends PureComponent {
                   </Col>
                   <Col md={12} sm={24}>
                     <FormItem label="项目名称">
-                      {getFieldDecorator('no')(
+                      {getFieldDecorator('keywords')(
                         <Input placeholder="输入项目名称" />
                       )}
                     </FormItem>
@@ -125,7 +161,7 @@ export default class List extends PureComponent {
               loading={loading}
               rowKey={record => record.id}
               columns={this.columns}
-              dataSource={data}
+              dataSource={tableData}
               onChange={this.handleTableChange}
             />
           </div>
