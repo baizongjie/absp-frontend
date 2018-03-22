@@ -20,8 +20,8 @@
   "disableDynamicImport": false,
   "hash": true,
   "proxy": {
-    "/api/v1/upload": {
-      "target": "http://localhost:9010/",
+    "/upload": {
+      "target": "http://localhost:8080/",
       "changeOrigin": true
     }
   }
